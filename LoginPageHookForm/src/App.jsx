@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { updateEmail } from '../redux/slices/activeUser/activeUserSlice';
 import LoginPage from "./pages/LoginPage";
 import AdminPage from './pages/AdminPage';
+import { NotExistPage } from './pages/NotExistPage';
 import "antd/dist/reset.css";
-import { updateEmail } from '../redux/slices/activeUser/activeUserSlice';
 
 export default function App() {
 
@@ -22,7 +23,6 @@ export default function App() {
     }
   },[dispatch]);
 
-
   const ProtectedRoute = (prop) => {
     const { isAuthenticated, element, redirectTo } = prop;
     if ( typeof element === "string" ){
@@ -33,7 +33,6 @@ export default function App() {
     return isAuthenticated ? element : <Navigate to={redirectTo} />;
   };
 
-
   return (
     <Routes>
       <Route path="/">
@@ -41,6 +40,7 @@ export default function App() {
       </Route>
         <Route path="/login" element={<ProtectedRoute isAuthenticated={!activeUserEmail} element={<LoginPage />} redirectTo="/admin" />} />
         <Route path="/admin" element={<ProtectedRoute isAuthenticated={activeUserEmail} element={<AdminPage />} redirectTo="/login" />} />
+        <Route path="/*" element={<NotExistPage/>} />
     </Routes>
   )
 }
