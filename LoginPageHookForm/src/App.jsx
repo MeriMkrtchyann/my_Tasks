@@ -23,7 +23,7 @@ function App() {
     }
   },[dispatch]);
 
-  const routeԼinks = {
+  const routeLinks = {
     login : "/login",
     admin : "/admin"
 
@@ -42,10 +42,10 @@ function App() {
   return (
     <Routes>
       <Route path="/">
-        <Route index element={<ProtectedRoute isAuthenticated={activeUserEmail} element={`${routeԼinks.admin}`}  redirectTo={`${routeԼinks.login}`} />} />
+        <Route index element={<ProtectedRoute isAuthenticated={activeUserEmail} element={`${routeLinks.admin}`}  redirectTo={`${routeLinks.login}`} />} />
       </Route>
-        <Route path={`${routeԼinks.login}`} element={<ProtectedRoute isAuthenticated={!activeUserEmail} element={<LoginPage />} redirectTo={`${routeԼinks.admin}`} />} />
-        <Route path={`${routeԼinks.admin}`} element={<ProtectedRoute isAuthenticated={activeUserEmail} element={<AdminPage />} redirectTo={`${routeԼinks.login}`} />} />
+        <Route path={`${routeLinks.login}`} element={<ProtectedRoute isAuthenticated={!activeUserEmail} element={<LoginPage />} redirectTo={`${routeLinks.admin}`} />} />
+        <Route path={`${routeLinks.admin}`} element={<ProtectedRoute isAuthenticated={activeUserEmail} element={<AdminPage />} redirectTo={`${routeLinks.login}`} />} />
         <Route path="/*" element={<NotExistPage/>} />
     </Routes>
   )
