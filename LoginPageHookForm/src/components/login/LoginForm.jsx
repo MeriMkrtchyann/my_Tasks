@@ -23,9 +23,9 @@ function LoginForm (){
   const [error , setError] = useState("")
   
 const onFinish = async (values) => {
-  // dispatch(updateEmail(values.email))
-  // localStorage.setItem('activeUserEmail', values.email);
-  // navigate("/admin")
+  dispatch(updateEmail(values.email))
+  localStorage.setItem('activeUserEmail', values.email);
+  navigate("/admin")
   setError("")
   try{
     const response = await axios.post("/api/admin/login", values)

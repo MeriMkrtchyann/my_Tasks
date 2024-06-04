@@ -23,6 +23,12 @@ function App() {
     }
   },[dispatch]);
 
+  const routeԼinks = {
+    login : "/login",
+    admin : "/admin"
+
+  }
+
   const ProtectedRoute = (prop) => {
     const { isAuthenticated, element, redirectTo } = prop;
     if ( typeof element === "string" ){
@@ -36,10 +42,10 @@ function App() {
   return (
     <Routes>
       <Route path="/">
-        <Route index element={<ProtectedRoute isAuthenticated={activeUserEmail} element="/admin"  redirectTo="/login" />} />
+        <Route index element={<ProtectedRoute isAuthenticated={activeUserEmail} element={`${routeԼinks.admin}`}  redirectTo={`${routeԼinks.login}`} />} />
       </Route>
-        <Route path="/login" element={<ProtectedRoute isAuthenticated={!activeUserEmail} element={<LoginPage />} redirectTo="/admin" />} />
-        <Route path="/admin" element={<ProtectedRoute isAuthenticated={activeUserEmail} element={<AdminPage />} redirectTo="/login" />} />
+        <Route path={`${routeԼinks.login}`} element={<ProtectedRoute isAuthenticated={!activeUserEmail} element={<LoginPage />} redirectTo={`${routeԼinks.admin}`} />} />
+        <Route path={`${routeԼinks.admin}`} element={<ProtectedRoute isAuthenticated={activeUserEmail} element={<AdminPage />} redirectTo={`${routeԼinks.login}`} />} />
         <Route path="/*" element={<NotExistPage/>} />
     </Routes>
   )
