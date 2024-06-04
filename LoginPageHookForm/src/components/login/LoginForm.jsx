@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import "antd/dist/reset.css";
 // import axios from 'axios';
 import { useDispatch } from 'react-redux' 
-import { updateEmail } from '../../../redux/slices/activUser/activUserSlice';
+import { updateEmail } from '../../../redux/slices/activeUser/activeUserSlice';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -21,13 +21,13 @@ export default function LoginForm (){
   
 const onFinish = async (values) => {
   dispatch(updateEmail(values.email))
-  localStorage.setItem('activUserEmail', values.email);
+  localStorage.setItem('activeUserEmail', values.email);
   navigate("/admin")
 
   // try{
   //   const response = await axios.post("/api/admin/login", values)
   //   dispatch(updateEmail(values.email))
-  //   localStorage.setItem('activUserEmail', values.email);
+  //   localStorage.setItem('activeUserEmail', values.email);
   //   navigate("/admin")
   //   console.log(response.data)
   // }catch(error){

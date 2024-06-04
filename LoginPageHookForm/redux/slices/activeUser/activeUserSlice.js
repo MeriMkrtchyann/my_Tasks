@@ -5,19 +5,19 @@ const initialState = {
   password : ""
 }
 
-export const activUserSlice = createSlice({
-  name: 'activUser',
+export const activeUserSlice = createSlice({
+  name: 'activeUser',
   initialState,
   reducers: {
     updateEmail: (state, action) => {
         state.email = action.payload;
     },
-    activUser: (state) => {
+    activeUser: (state) => {
         console.log(state.email);
         return state.email
     }
   },
 })
 
-export const { updateEmail, activUser } = activUserSlice.actions
-export default activUserSlice.reducer
+export const { updateEmail, activeUser } = activeUserSlice.actions
+export default activeUserSlice.reducer

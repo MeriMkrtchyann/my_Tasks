@@ -28,7 +28,7 @@ const data = [
   },
 ];
 
-export default function Tabel () {
+export default function MyTable () {
     return (
         <Table dataSource={data}>
             <ColumnGroup title="User Data">

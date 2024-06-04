@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
-import Tabel from '../components/tabels/Tabel';
 import { useSelector } from 'react-redux' 
+import MyTable from '../components/tables/Table';
 
 const { Header, Content, Footer, Sider } = Layout;
 
-function getItem(label, key, categori, icon, children) {
+function getItem(label, key, category, icon, children) {
   return {
     key,
     icon,
-    categori,
+    category,
     children,
     label,
   };
@@ -38,22 +38,22 @@ const userContent = {
 
 export default function AdminPage() {
 
-  const {email} = useSelector((state) => state.activUser)
+  const {email} = useSelector((state) => state.activeUser)
   const [collapsed, setCollapsed] = useState(false);
-  const [categoriType, setCategoriType] = useState('');
-  const [categori, setCategori] = useState('');
+  const [categoryType, setCategoryType] = useState('');
+  const [category, setCategory] = useState('');
   const {token: { colorBgContainer, borderRadiusLG },} = theme.useToken();
 
   const handleMenuClick = (value) => {
-    setCategoriType(value.key);
+    setCategoryType(value.key);
     const selectedCategory = findCategory(items, value.key);
-    setCategori(selectedCategory);
+    setCategory(selectedCategory);
   };
 
   const findCategory = (items, key) => {
     for (const item of items) {
       if (item.key === key) {
-        return item.categori;
+        return item.category;
       }
       if (item.children) {
         const category = findCategory(item.children, key);
@@ -71,7 +71,7 @@ export default function AdminPage() {
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
-          defaultSelectedKeys={[categoriType]}
+          defaultSelectedKeys={[categoryType]}
           mode="inline"
           items={items}
           onClick={handleMenuClick}
@@ -91,25 +91,25 @@ export default function AdminPage() {
         <h3>{email}</h3>
       </Header>   
         <Content style={{ margin: '0 16px' }}>
-        {categoriType ? 
+        {categoryType ? 
           <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>{categori}</Breadcrumb.Item>
-            <Breadcrumb.Item>{categoriType}</Breadcrumb.Item>
+            <Breadcrumb.Item>{category}</Breadcrumb.Item>
+            <Breadcrumb.Item>{categoryType}</Breadcrumb.Item>
           </Breadcrumb>
           :
           <div>
-            <Tabel/>
+            <MyTable/>
           </div>
         }
           <div
             style={{
               padding: 24,
               minHeight: 360,
-              background: categoriType ? colorBgContainer : borderRadiusLG,
+              background: categoryType ? colorBgContainer : borderRadiusLG,
               borderRadius: borderRadiusLG,
             }}
           >
-            {userContent[categoriType]}
+            {userContent[categoryType]}
           </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>

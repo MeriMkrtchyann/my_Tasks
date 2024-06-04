@@ -1,7 +1,7 @@
 import LoginForm from "../components/login/LoginForm";
 import styled from '@emotion/styled';
 
-const LoginConteyner = styled.div`
+const LoginContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -10,7 +10,7 @@ const LoginConteyner = styled.div`
     background-color : #c0c0c0;
 `
 
-const LoginFormConteyner = styled.div`
+const LoginFormContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -21,13 +21,13 @@ const LoginFormConteyner = styled.div`
 `
 export default function LoginPage() {
     return (
-       <LoginConteyner>
-            <LoginFormConteyner>
+       <LoginContainer>
+            <LoginFormContainer>
                 <div>
                     <LoginForm/>
                 </div>
-            </LoginFormConteyner>
-        </LoginConteyner>
+            </LoginFormContainer>
+        </LoginContainer>
     )
 }
      
