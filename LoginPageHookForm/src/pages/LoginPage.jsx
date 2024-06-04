@@ -1,4 +1,4 @@
-import LoginForm from "../components/login/LoginForm";
+import { LoginForm } from "../components/login/LoginForm";
 import styled from '@emotion/styled';
 
 const LoginContainer = styled.div`
@@ -18,8 +18,9 @@ const LoginFormContainer = styled.div`
     border: 1px solid white;
     border-radius: 2rem;
     padding: 50px;
-`
-export default function LoginPage() {
+` 
+
+function LoginPage() {
     return (
        <LoginContainer>
             <LoginFormContainer>
@@ -30,4 +31,5 @@ export default function LoginPage() {
         </LoginContainer>
     )
 }
-     
+    
+export { LoginPage }

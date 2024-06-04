@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateEmail } from '../redux/slices/activeUser/activeUserSlice';
-import LoginPage from "./pages/LoginPage";
-import AdminPage from './pages/AdminPage';
+import {LoginPage} from "./pages/LoginPage";
+import {AdminPage} from './pages/AdminPage';
 import { NotExistPage } from './pages/NotExistPage';
 import "antd/dist/reset.css";
 
-export default function App() {
+function App() {
 
   const activeUserEmail = useSelector((state) => state.activeUser.email)
   const dispatch = useDispatch()
@@ -44,3 +44,5 @@ export default function App() {
     </Routes>
   )
 }
+
+export { App }

@@ -36,7 +36,7 @@ const userContent = {
   'Arthur': 'Arthur is an admin.',
 };
 
-export default function AdminPage() {
+function AdminPage() {
 
   const {email} = useSelector((state) => state.activeUser)
   const [collapsed, setCollapsed] = useState(false);
@@ -119,3 +119,5 @@ export default function AdminPage() {
     </Layout>
   );
 }
+
+export {AdminPage}

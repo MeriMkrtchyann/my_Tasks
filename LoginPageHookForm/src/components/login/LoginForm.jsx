@@ -1,11 +1,12 @@
-import { Button, Checkbox, Form, Input  } from 'antd';
-import { useForm } from "react-hook-form"
-import styled from '@emotion/styled';
-import "antd/dist/reset.css";
-// import axios from 'axios';
+import axios from 'axios';
 import { useDispatch } from 'react-redux' 
 import { updateEmail } from '../../../redux/slices/activeUser/activeUserSlice';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Button, Checkbox, Form, Input, Alert, Space   } from 'antd';
+import { useForm } from "react-hook-form"
+import styled from '@emotion/styled';
+import "antd/dist/reset.css";
 
 
 const Conteyner = styled.div`
@@ -14,25 +15,27 @@ const Conteyner = styled.div`
     justify-content: space-between
 `
 
-export default function LoginForm (){ 
+function LoginForm (){ 
 
   const dispatch = useDispatch()
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate()
+  const [error , setError] = useState("")
   
 const onFinish = async (values) => {
-  dispatch(updateEmail(values.email))
-  localStorage.setItem('activeUserEmail', values.email);
-  navigate("/admin")
-  // try{
-  //   const response = await axios.post("/api/admin/login", values)
-  //   dispatch(updateEmail(values.email))
-  //   localStorage.setItem('activeUserEmail', values.email);
-  //   navigate("/admin")
-  //   console.log(response.data)
-  // }catch(error){
-  //   console.error(error.message);
-  // }
+  // dispatch(updateEmail(values.email))
+  // localStorage.setItem('activeUserEmail', values.email);
+  // navigate("/admin")
+  setError("")
+  try{
+    const response = await axios.post("/api/admin/login", values)
+    dispatch(updateEmail(values.email))
+    localStorage.setItem('activeUserEmail', values.email);
+    navigate("/admin")
+    console.log(response.data)
+  }catch(error){
+    setError("Խնդրում ենք մուտքագրել վավեր տվյալներ")
+  }
 };
 
 const onFinishFailed = (errorInfo) => {
@@ -60,13 +63,28 @@ const onSubmit = (data) => console.log(data)
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
+       {error && 
+          <Space
+            direction="vertical"
+            style={{
+              width: '100%',
+            }}
+          >
+            <Alert
+              message={error}
+              type="error"
+              showIcon
+              closable
+            />
+          </Space>
+        }
         <Form.Item
           label="Էլ․ փոստ"
           name="email"
           rules={[
             {
               required: true,
-              message: 'Please input your email!',
+              message: 'Խնդրում ենք մուտքագրել ձեր էլփոստը',
             },
           ]}
           labelCol={{
@@ -89,7 +107,7 @@ const onSubmit = (data) => console.log(data)
           rules={[
             {
               required: true,
-              message: 'Please input your password!',
+              message: 'Խնդրում ենք մուտքագրել ձեր գաղտնաբառը',
             },
           ]}
           labelCol={{
@@ -127,3 +145,5 @@ const onSubmit = (data) => console.log(data)
     </div> 
   )
 }
+
+export  {LoginForm} 
