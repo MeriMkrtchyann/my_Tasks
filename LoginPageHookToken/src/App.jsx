@@ -44,8 +44,7 @@ function App() {
         <Route index element={<ProtectedRoute element={`${routeLinks.admin}`}  redirectTo={`${routeLinks.login}`} />} />
       </Route>
         <Route path={`${routeLinks.login}`} element={<ProtectedRoute element={`${routeLinks.admin}`} redirectTo={<LoginPage/>} />} />
-        {/* <Route path={`${routeLinks.admin}`} element={<ProtectedRoute element={<AdminPage />} redirectTo={`${routeLinks.login}`} />} /> */}
-        <Route path={`${routeLinks.admin}`} element={<AdminPage />} />
+        <Route path={`${routeLinks.admin}`} element={<ProtectedRoute element={<AdminPage />} redirectTo={`${routeLinks.login}`} />} />
         <Route path="/*" element={<NotExistPage/>} />
     </Routes>
   )

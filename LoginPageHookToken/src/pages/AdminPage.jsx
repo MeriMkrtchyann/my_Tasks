@@ -4,6 +4,7 @@ import { Breadcrumb, Layout, Menu, theme, Dropdown, Space } from 'antd';
 import { useSelector } from 'react-redux' 
 import MyTable from '../components/tables/Table';
 import styled from '@emotion/styled';
+import { useNavigate } from 'react-router-dom';
 
 const Paragraph = styled.p`
     margin: 2px;
@@ -47,6 +48,7 @@ function AdminPage() {
   const [categoryType, setCategoryType] = useState('');
   const [category, setCategory] = useState('');
   const {token: { colorBgContainer, borderRadiusLG },} = theme.useToken();
+  const navigate = useNavigate()
 
   const handleMenuClick = (value) => {
     setCategoryType(value.key);
@@ -69,8 +71,11 @@ function AdminPage() {
     return null;
   };
 
+  /////////////
+
   const onLogout = () => {
     localStorage.removeItem("access_token");
+    navigate("/login");
   };
 
   const menu = (
@@ -81,7 +86,7 @@ function AdminPage() {
     </Menu>
   );
 
- 
+  /////////////
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
