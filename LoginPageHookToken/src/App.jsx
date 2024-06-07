@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-// import { updateEmail } from '../redux/slices/activeUser/activeUserSlice';
 import {LoginPage} from "./pages/LoginPage";
 import {AdminPage} from './pages/AdminPage';
 import { NotExistPage } from './pages/NotExistPage';

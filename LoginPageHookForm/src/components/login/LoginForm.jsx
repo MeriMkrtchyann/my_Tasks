@@ -26,7 +26,7 @@ const onFinish = async (values) => {
   dispatch(updateEmail(values.email))
   localStorage.setItem('activeUserEmail', values.email);
   navigate("/admin")
-  setError("")
+  setError()
   try{
     const response = await axios.post("/api/admin/login", values)
     dispatch(updateEmail(values.email))

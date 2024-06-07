@@ -2,46 +2,79 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux' 
 import { updateUserInfo } from '../../../redux/slices/activeUser/activeUserSlice';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from "react-hook-form"
-import styled from '@emotion/styled';
+import { Controller, useForm, useWatch,useFormState } from "react-hook-form"
+// import styled from '@emotion/styled';
+import { Button, Form, Input } from 'antd';
+import PropTypes from 'prop-types';
 
-const Container = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between
-`
+// const Container = styled.div`
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-between
+// `
 
-const FormContainer = styled.form`
-    display: flex;
-    flex-direction: column;
-    gap : 10px;
-`;
+// const FormContainer = styled.form`
+//     display: flex;
+//     flex-direction: column;
+//     gap : 10px;
+// `;
 
-const FormGroup = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-`;
+// const FormGroup = styled.div`
+//     display: flex;
+//     flex-direction: column;
+//     gap: 4px;
+// `;
+
+const SubmitButton = (props) => {
+
+  const [username,password]  = useWatch({
+    control:props.control,
+    name:['username', 'password']
+  });
+
+  const {isSubmitted} = useFormState({
+    control:props.control,
+  });
+
+  const disabled = !username?.trim() || !password
+
+  return (
+    <Button loading={isSubmitted} disabled={disabled} htmlType='submit'>Login</Button>
+  )
+}
+
+
+SubmitButton.propTypes = {
+  control: PropTypes.any.isRequired,
+}
 
 function LoginForm (){ 
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { handleSubmit, control,  } = useForm({
+    mode:'onBlur'
+  });
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const onSubmit = async (values) => {
     try{
-      const response = await axios.post("/api/admin/login", values)
+      const response = await axios.post("/api/admin/login", values);
+
+      localStorage.setItem('access_token', response.data.access_token);
+      
       if (response.data.access_token){
         const userData = await axios.get('/api/admin/me', {
           headers: {
             'Authorization': `Bearer ${response.data.access_token}`
           }
         });
-        dispatch(updateUserInfo(userData.data))
+        dispatch(updateUserInfo(userData.data));
+
         localStorage.setItem('access_token', response.data.access_token);
+        
         navigate("/admin")
       }
+
     }catch(error){
       console.log(error)
     }
@@ -53,6 +86,50 @@ function LoginForm (){
           <img src="../../../public/logo.svg" alt="Logo" style={{ width: '100px', textAlign:"center" }} />
           <h2>Մուտք</h2>
         </div>
+        
+        <form onSubmit={handleSubmit(onSubmit)}>
+
+<Form layout='vertical' component='div'>
+      <Controller
+        name='username'
+        control={control}
+        // 
+        
+        
+        render={({field, fieldState})=>{  
+          return (
+            <Form.Item
+              validateStatus={fieldState.error ? 'error' : ''}
+              help={fieldState.error?.message}
+            >
+            <Input {...field}/>
+          </Form.Item>
+          )
+        }}
+      />
+      <Controller
+        name='password'
+        control={control}
+        render={({field, fieldState})=>{
+          return (
+            <Form.Item
+              validateStatus={fieldState.error ? 'error' : ''}
+              help={fieldState.error?.message}
+            >
+            <Input.Password {...field}/>
+          </Form.Item>
+          )
+        }}
+      />
+      <SubmitButton control={control}/>
+      <Button htmlType='submit'>Login</Button>
+</Form>
+
+
+
+</form>
+
+{/* 
         <Container>
           <FormContainer onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
@@ -80,7 +157,7 @@ function LoginForm (){
             </FormGroup>
             <input type="submit" />
           </FormContainer>
-        </Container>
+        </Container> */}
       </div> 
     )
 }

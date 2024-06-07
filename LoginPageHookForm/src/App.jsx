@@ -5,8 +5,8 @@ import { updateEmail } from '../redux/slices/activeUser/activeUserSlice';
 import {LoginPage} from "./pages/LoginPage";
 import {AdminPage} from './pages/AdminPage';
 import { NotExistPage } from './pages/NotExistPage';
-import "antd/dist/reset.css";
 import { ProtectedRoute } from './components/protectedRoute/ProtectedRoute';
+import "antd/dist/reset.css";
 
 function App() {
 
@@ -27,7 +27,6 @@ function App() {
   const routeLinks = {
     login : "/login",
     admin : "/admin"
-
   }
 
   return (

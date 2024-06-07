@@ -3,16 +3,15 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   accessToken: localStorage.getItem('access_token'),
   isAuthenticated: !!localStorage.getItem('access_token'),
-  activeUser : {  },
+  activeAdmin : {  },
 }
 
-export const activeUserSlice = createSlice({
-  name: 'activeUser',
+export const activeAdminSlice = createSlice({
+  name: 'activeAdmin',
   initialState,
   reducers: {
-    updateUserInfo : (state, action) => {
-      state.activeUser = action.payload;
-      console.log(state.activeUser)
+    updateAdminInfo : (state, action) => {
+      state.activeAdmin = action.payload;
     },
     updateAccessToken : (state, action) => {
       state.accessToken = action.payload;
@@ -21,7 +20,6 @@ export const activeUserSlice = createSlice({
     
     logout : () => {
       localStorage.removeItem('access_token');
-      
       return {
         ...initialState,
         isAuthenticated:false,
@@ -31,5 +29,5 @@ export const activeUserSlice = createSlice({
   },
 })
 
-export const { updateUserInfo } = activeUserSlice.actions
-export default activeUserSlice.reducer
+export const { updateAdminInfo, updateAccessToken, logout } = activeAdminSlice.actions
+export default activeAdminSlice.reducer
