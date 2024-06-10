@@ -1,14 +1,14 @@
 import { createDraftSafeSelector, createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  auditsInfo : { },
+  audits : { },
 }
 
-export const selectAuthReducer = (state) => state.auditsInfo;
+export const selectAuthReducer = (state) => state.audits;
 
-export const selectAccessToken = createDraftSafeSelector(
+export const selectAuditsInfo = createDraftSafeSelector(
   selectAuthReducer,
-  (auditsInfo) => auditsInfo,
+  (state) => state.audits.audits,
 );
 
 export const auditsInfoSlice = createSlice({
@@ -16,7 +16,7 @@ export const auditsInfoSlice = createSlice({
   initialState,
   reducers: {
     updateAuditsInfo : (state, action) => {
-      state.auditsInfo = action.payload;
+      state.audits = action.payload;
     },
   },
 })

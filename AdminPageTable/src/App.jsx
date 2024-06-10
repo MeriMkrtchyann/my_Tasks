@@ -10,6 +10,8 @@ import { AuditsPage } from './pages/AuditsPage';
 
 function App() {
 
+  
+
   return (
     <Routes>
       <Route path="/" element={<ProtectedRoute element={<AdminPage />} redirectTo={routes.login} />} />

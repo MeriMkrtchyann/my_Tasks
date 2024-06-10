@@ -3,7 +3,7 @@ import { Dropdown, Menu, Space } from 'antd';
 import { useSelector } from 'react-redux';
 import { UserOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../../redux/slices/activeAdmin/activeAdminSlice';
+import { logout, selectActiveAdmin } from '../../../redux/slices/activeAdmin/activeAdminSlice';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../../config/routes';
 
@@ -13,8 +13,7 @@ const Paragraph = styled.p`
 
 const AdminMenu = () => {
 
-    const { firstname } = useSelector((state) => state.activeAdmin.activeAdmin)
-    const { lastname } = useSelector((state) => state.activeAdmin.activeAdmin)
+    const { firstname,lastname } = useSelector(selectActiveAdmin)
     const navigate = useNavigate()
 
     const logOut = () => {

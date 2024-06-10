@@ -4,7 +4,7 @@ import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { getData } from '../api/getData';
 import { urls } from '../config/urls';
-import { updateUsersInfo } from '../../redux/slices/usersInfo/usersInfoSlice';
+import { selectUsersInfo, updateUsersInfo } from '../../redux/slices/usersInfo/usersInfoSlice';
 
   const onChange = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
@@ -13,6 +13,9 @@ import { updateUsersInfo } from '../../redux/slices/usersInfo/usersInfoSlice';
 const UsersPage = () => {
 
   const dispatch = useDispatch()
+  const [ searchedText, setSearchedText ] = useState("")
+  const users = useSelector(selectUsersInfo);
+  console.log(users)
 
   useEffect(() => {
     try{
@@ -29,7 +32,6 @@ const UsersPage = () => {
     }
   },[dispatch]);
 
-    const [ searchedText, setSearchedText ] = useState("")
 
     const columns = [
       {
@@ -92,8 +94,7 @@ const UsersPage = () => {
       },
     ];
 
-    const {users} = useSelector(state => state.usersInfo.usersInfo);
-    console.log(users)
+   
     return (
       <>
        <Input.Search 
@@ -105,7 +106,7 @@ const UsersPage = () => {
      
             <Table 
                 columns={columns} 
-                dataSource={users} 
+                dataSource={users } 
                 nChange={onChange} 
                 rowKey="id"
             />;

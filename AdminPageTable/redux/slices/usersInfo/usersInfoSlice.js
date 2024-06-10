@@ -1,14 +1,15 @@
 import { createDraftSafeSelector, createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  usersInfo : {  },
+  usersInfo : { },
 }
 
-export const selectAuthReducer = (state) => state.auditsInfo;
+export const selectAuthReducer = (state) => state.usersInfo;
 
 export const selectUsersInfo = createDraftSafeSelector(
   selectAuthReducer,
-  (usersInfo) => usersInfo,
+  (state) => state.usersInfo.users,
+
 );
 
 export const usersInfoSlice = createSlice({

@@ -8,7 +8,6 @@ import { getToken } from '../../api/getToken';
 import { urls } from '../../config/urls';
 import { getData } from '../../api/getData';
 import { routes } from '../../config/routes';
-import { updateUsersInfo } from '../../../redux/slices/usersInfo/usersInfoSlice';
 
 const Container = styled.div`
     display: flex;
@@ -27,12 +26,9 @@ function LoginForm() {
     const onSubmit = async (values) => {
         try {
             const accessToken = await getToken(urls.login , values);
-            // dispatch(updateAccessToken(accessToken));
             if (accessToken) {
                 const adminData = await getData(urls.aboutAdmin)
-                const usersData = await getData(urls.aboutUsers)
                 dispatch(updateAdminInfo(adminData));
-                dispatch(updateUsersInfo(usersData))
                 navigate(routes.admin);
             }
         } catch (error) {
