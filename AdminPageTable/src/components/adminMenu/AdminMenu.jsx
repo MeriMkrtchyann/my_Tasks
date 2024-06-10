@@ -14,6 +14,7 @@ const Paragraph = styled.p`
 const AdminMenu = () => {
 
     const { firstname,lastname } = useSelector(selectActiveAdmin)
+
     const navigate = useNavigate()
 
     const logOut = () => {

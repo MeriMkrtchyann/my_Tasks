@@ -1,11 +1,13 @@
 import { Input, Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { getData } from '../api/getData';
 import { urls } from '../config/urls';
-import { selectUsersInfo, updateUsersInfo } from '../../redux/slices/usersInfo/usersInfoSlice';
-
+import { selectUsers, updateUsers } from '../../redux/slices/usersInfo/usersInfoSlice';
+import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
+// import { selectPagination  } from '../../redux/slices/pagination/paginationSlice';
+// updatePageSize, updatePaginationCurrent
   const onChange = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
   };
@@ -13,24 +15,21 @@ import { selectUsersInfo, updateUsersInfo } from '../../redux/slices/usersInfo/u
 const UsersPage = () => {
 
   const dispatch = useDispatch()
-  const [ searchedText, setSearchedText ] = useState("")
-  const users = useSelector(selectUsersInfo);
-  console.log(users)
+  const accessToken = useSelector(selectAccessToken)
+  const users = useSelector(selectUsers);
 
   useEffect(() => {
     try{
       (async function () {
-        const accessToken = localStorage.getItem('access_token');
         if (accessToken) {
           const usersData = await getData(urls.aboutUsers)
-          dispatch(updateUsersInfo(usersData))
+          dispatch(updateUsers(usersData))
         }
       })()
-     
     }catch(err){
       console.log(err)
     }
-  },[dispatch]);
+  },[dispatch, accessToken]);
 
 
     const columns = [
@@ -56,7 +55,7 @@ const UsersPage = () => {
           multiple: 2,
         },
         align: 'center',
-        filteredValue: [searchedText],
+        filteredValue: null,
         onFilter : (value , record) => {
           return record.email.includes(value);
         }
@@ -97,19 +96,15 @@ const UsersPage = () => {
    
     return (
       <>
-       <Input.Search 
-            placeholder="Search here..."
-            onSearch={(value) => {
-              setSearchedText(value)
-            }}
-      />
-     
-            <Table 
-                columns={columns} 
-                dataSource={users } 
-                nChange={onChange} 
-                rowKey="id"
-            />;
+        <Input.Search 
+              placeholder="Search here..."
+        />
+        <Table 
+            columns={columns} 
+            dataSource={users} 
+            nChange={onChange} 
+            rowKey="id"
+        />;
       </>
     )
 }

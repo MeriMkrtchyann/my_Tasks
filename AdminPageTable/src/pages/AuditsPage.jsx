@@ -2,10 +2,11 @@ import { useEffect } from "react"
 import { getData } from "../api/getData"
 import { urls } from "../config/urls"
 import { useDispatch, useSelector } from "react-redux"
-import { selectAuditsInfo, updateAuditsInfo } from "../../redux/slices/audits/auditsSlice"
+import { selectAudits, selectAuditsTotal, updateAuditsInfo } from "../../redux/slices/audits/auditsSlice"
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Table } from "antd"
 import { selectAccessToken } from "../../redux/slices/activeAdmin/activeAdminSlice"
+import { paginationConfig } from "../config/paginationConfig"
 
 const columns = [
     {
@@ -59,9 +60,8 @@ const AuditsPage = () => {
 
     const dispatch = useDispatch()
     const accessToken = useSelector(selectAccessToken)
-    const audits = useSelector(selectAuditsInfo);
-    console.log(audits)
-
+    const audits = useSelector(selectAudits);
+    const total = useSelector(selectAuditsTotal)
 
     useEffect(() => {
        (async () => {
@@ -83,6 +83,7 @@ const AuditsPage = () => {
                 dataSource={audits} 
                 onChange={onChange} 
                 rowKey="id"
+                pagination={paginationConfig(total)}
             />;
         </div>
     )

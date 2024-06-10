@@ -1,26 +1,36 @@
 import { createDraftSafeSelector, createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  usersInfo : { },
+  users : { 
+    total : null,
+  },
+  
 }
 
-export const selectAuthReducer = (state) => state.usersInfo;
+export const selectAuthReducer = (state) => state.users.users;
 
-export const selectUsersInfo = createDraftSafeSelector(
+export const selectUsers = createDraftSafeSelector(
   selectAuthReducer,
-  (state) => state.usersInfo.users,
-
+  (state) => state.users,
 );
 
-export const usersInfoSlice = createSlice({
-  name: 'usersInfo',
+export const selectUsersTotal = createDraftSafeSelector(
+  selectAuthReducer,
+  (state) => state.users.total
+);
+
+export const usersSlice = createSlice({
+  name: 'users',
   initialState,
   reducers: {
-    updateUsersInfo : (state, action) => {
-      state.usersInfo = action.payload;
+    updateUsers : (state, action) => {
+      state.users = action.payload;
+    },
+    updateUsersTotal : (state, action) => {
+      state.total = action.payload;
     },
   },
 })
 
-export const { updateUsersInfo } = usersInfoSlice.actions
-export default usersInfoSlice.reducer
+export const { updateUsers, updateUsersTotal } = usersSlice.actions
+export default usersSlice.reducer
