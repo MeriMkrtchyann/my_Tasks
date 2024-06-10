@@ -40,7 +40,7 @@ function App() {
     <Routes>
       <Route path="/" element={<ProtectedRoute element={<AdminPage />} redirectTo={routes.login} />} />
       <Route path={`${routes.login}`} element={<ProtectedRoute element={`${routes.admin}`} redirectTo={<LoginPage/>} />} />
-      <Route path={routes.admin} element={<ProtectedRoute element={<AdminPage />} redirectTo={routes.login} />} >
+      <Route path={`${routes.admin}`} element={<ProtectedRoute element={<AdminPage />} redirectTo={routes.login} />} >
         <Route index element={<UsersPage />} />
         <Route path={`${routes.users}`} element={<UsersPage />} />
         <Route path={`${routes.audits}`} element={<AuditsPage />} />
