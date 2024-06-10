@@ -1,16 +1,33 @@
 import { Input, Table } from 'antd';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { useState } from 'react';
-
-
-
+import { useEffect, useState } from 'react';
+import { getData } from '../api/getData';
+import { urls } from '../config/urls';
+import { updateUsersInfo } from '../../redux/slices/usersInfo/usersInfoSlice';
 
   const onChange = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
   };
 
 const UsersPage = () => {
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    try{
+      (async function () {
+        const accessToken = localStorage.getItem('access_token');
+        if (accessToken) {
+          const usersData = await getData(urls.aboutUsers)
+          dispatch(updateUsersInfo(usersData))
+        }
+      })()
+     
+    }catch(err){
+      console.log(err)
+    }
+  },[dispatch]);
 
     const [ searchedText, setSearchedText ] = useState("")
 

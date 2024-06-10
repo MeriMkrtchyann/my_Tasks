@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { updateAccessToken, updateAdminInfo } from '../../../redux/slices/activeAdmin/activeAdminSlice';
+import { updateAdminInfo } from '../../../redux/slices/activeAdmin/activeAdminSlice';
 import { useNavigate } from 'react-router-dom';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Button, Form, Input, Checkbox, message } from 'antd';
@@ -27,7 +27,7 @@ function LoginForm() {
     const onSubmit = async (values) => {
         try {
             const accessToken = await getToken(urls.login , values);
-            dispatch(updateAccessToken(accessToken));
+            // dispatch(updateAccessToken(accessToken));
             if (accessToken) {
                 const adminData = await getData(urls.aboutAdmin)
                 const usersData = await getData(urls.aboutUsers)

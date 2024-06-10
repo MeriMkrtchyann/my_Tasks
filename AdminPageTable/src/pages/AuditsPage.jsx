@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { updateAuditsInfo } from "../../redux/slices/audits/auditsSlice"
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Table } from "antd"
+import { selectAccessToken } from "../../redux/slices/activeAdmin/activeAdminSlice"
 
 const columns = [
     {
@@ -57,15 +58,17 @@ const columns = [
 const AuditsPage = () => {
 
     const dispatch = useDispatch()
+    const accessToken = useSelector(selectAccessToken)
     const {audits} = useSelector(state => state.audits.auditsInfo);
-    console.log(audits);
 
     useEffect(() => {
        (async () => {
-        const audits = await getData(urls.audits)
-        dispatch(updateAuditsInfo(audits));
+        if (accessToken) {
+          const audits = await getData(urls.audits)
+          dispatch(updateAuditsInfo(audits));
+        }
        })()
-    },[])
+    },[dispatch, accessToken])
 
     const onChange = (pagination, filters, sorter, extra) => {
         console.log('params', pagination, filters, sorter, extra);
