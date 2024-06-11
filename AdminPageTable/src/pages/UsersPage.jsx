@@ -1,35 +1,37 @@
-import { Input, Table } from 'antd';
+import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { getData } from '../api/getData';
 import { urls } from '../config/urls';
-import { selectUsers, updateUsers } from '../../redux/slices/usersInfo/usersInfoSlice';
+import { selectUsers, selectUsersTotal, updateUsers } from '../../redux/slices/usersInfo/usersInfoSlice';
 import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
-// import { selectPagination  } from '../../redux/slices/pagination/paginationSlice';
-// updatePageSize, updatePaginationCurrent
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
-  };
+import { selectPage, selectPagination, selectSize, updatePagination } from "../../redux/slices/pagination/paginationSlice"
 
 const UsersPage = () => {
 
   const dispatch = useDispatch()
   const accessToken = useSelector(selectAccessToken)
   const users = useSelector(selectUsers);
+  const total = useSelector(selectUsersTotal)
+  const size = useSelector(selectSize);
+  const page = useSelector(selectPage);
+  const pagination = useSelector(selectPagination)
+
 
   useEffect(() => {
     try{
       (async function () {
         if (accessToken) {
-          const usersData = await getData(urls.aboutUsers)
+          const usersData = await getData(`${urls.aboutUsers}?page=${page-1}&size=${size}`)
           dispatch(updateUsers(usersData))
+          dispatch(updatePagination({ page, size, total }))
         }
       })()
     }catch(err){
       console.log(err)
     }
-  },[dispatch, accessToken]);
+  },[dispatch, accessToken, total, size , page]);
 
 
     const columns = [
@@ -93,17 +95,23 @@ const UsersPage = () => {
       },
     ];
 
+    const onChange = (pagination) => {
+      console.log(pagination)
+      dispatch(updatePagination({
+        page: pagination.current,
+        size: pagination.pageSize,
+        total: pagination.total,
+    }));
+    };
    
     return (
       <>
-        <Input.Search 
-              placeholder="Search here..."
-        />
         <Table 
             columns={columns} 
             dataSource={users} 
-            nChange={onChange} 
+            onChange={onChange} 
             rowKey="id"
+            pagination={pagination}
         />;
       </>
     )

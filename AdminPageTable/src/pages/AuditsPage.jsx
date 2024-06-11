@@ -5,7 +5,7 @@ import { selectAudits, selectAuditsTotal, updateAuditsInfo } from "../../redux/s
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Table } from "antd"
 import { selectAccessToken } from "../../redux/slices/activeAdmin/activeAdminSlice"
-import { selectPage, selectPagination, selectSize, updatePagination } from "../../redux/slices/pagination/paginationSlice"
+import { selectPage, selectPagination, selectSize, updatePagination, updatePaginationTotal } from "../../redux/slices/pagination/paginationSlice"
 import { urls } from "../config/urls";
 
 const columns = [
@@ -69,8 +69,9 @@ const AuditsPage = () => {
     useEffect(() => {
        (async () => {
         if (accessToken) {
-          const audits = await getData(`${urls.audits}?page=${page}&size=${size}`)
+          const audits = await getData(`${urls.audits}?page=${page-1}&size=${size}`)
           dispatch(updateAuditsInfo(audits));
+          dispatch(updatePaginationTotal(total))
         }
        })()
     },[dispatch, accessToken, total, size , page])
@@ -79,7 +80,7 @@ const AuditsPage = () => {
       dispatch(updatePagination({
         page: pagination.current,
         size: pagination.pageSize,
-        total: pagination.total
+        total: pagination.total,
     }));
     };
 

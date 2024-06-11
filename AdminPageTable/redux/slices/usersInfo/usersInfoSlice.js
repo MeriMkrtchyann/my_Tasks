@@ -16,7 +16,7 @@ export const selectUsers = createDraftSafeSelector(
 
 export const selectUsersTotal = createDraftSafeSelector(
   selectAuthReducer,
-  (state) => state.users.total
+  (state) => state.total
 );
 
 export const usersSlice = createSlice({
