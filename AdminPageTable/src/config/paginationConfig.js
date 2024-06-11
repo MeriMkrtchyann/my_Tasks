@@ -1,7 +1,7 @@
-const paginationConfig = (total) => {
+const paginationConfig = (total, pageSize, current) => {
     return {
-      current: 1,
-      pageSize: 10,
+      current,
+      pageSize,
       total,
       showSizeChanger: true,
       pageSizeOptions: ['10', '20', '30'],

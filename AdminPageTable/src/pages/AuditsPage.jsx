@@ -1,12 +1,12 @@
 import { useEffect } from "react"
 import { getData } from "../api/getData"
-import { urls } from "../config/urls"
 import { useDispatch, useSelector } from "react-redux"
 import { selectAudits, selectAuditsTotal, updateAuditsInfo } from "../../redux/slices/audits/auditsSlice"
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Table } from "antd"
 import { selectAccessToken } from "../../redux/slices/activeAdmin/activeAdminSlice"
-import { paginationConfig } from "../config/paginationConfig"
+import { selectPage, selectPagination, selectSize, updatePagination } from "../../redux/slices/pagination/paginationSlice"
+import { urls } from "../config/urls";
 
 const columns = [
     {
@@ -57,23 +57,30 @@ const columns = [
   ];
 
 const AuditsPage = () => {
-
+  
     const dispatch = useDispatch()
     const accessToken = useSelector(selectAccessToken)
     const audits = useSelector(selectAudits);
     const total = useSelector(selectAuditsTotal)
-
+    const size = useSelector(selectSize);
+    const page = useSelector(selectPage);
+    const pagination = useSelector(selectPagination)
+   
     useEffect(() => {
        (async () => {
         if (accessToken) {
-          const audits = await getData(urls.audits)
+          const audits = await getData(`${urls.audits}?page=${page}&size=${size}`)
           dispatch(updateAuditsInfo(audits));
         }
        })()
-    },[dispatch, accessToken])
+    },[dispatch, accessToken, total, size , page])
 
-    const onChange = (pagination, filters, sorter, extra) => {
-        console.log('params', pagination, filters, sorter, extra);
+    const onChange = (pagination) => {
+      dispatch(updatePagination({
+        page: pagination.current,
+        size: pagination.pageSize,
+        total: pagination.total
+    }));
     };
 
     return (
@@ -83,7 +90,7 @@ const AuditsPage = () => {
                 dataSource={audits} 
                 onChange={onChange} 
                 rowKey="id"
-                pagination={paginationConfig(total)}
+                pagination={pagination}
             />;
         </div>
     )
