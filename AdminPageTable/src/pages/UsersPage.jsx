@@ -34,11 +34,13 @@ const UsersPage = () => {
   const sortField = useSelector(selectSortField);
   const defaultSort = useSelector(selectDefaultSort);
 
+  const [ searchValue , setSearchValue ] = useState("")
+
   useEffect(() => {
     if (accessToken) {
       (async function () {
         try {
-          const response = await getData(`${urls.aboutUsers}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}`);
+          const response = await getData(`${urls.aboutUsers}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}&searchValue=${searchValue}`);
           const { users: usersData, total: totalData } = response;
           dispatch(updateUsers(usersData));
           dispatch(updateUsersTotal(totalData));
@@ -47,7 +49,7 @@ const UsersPage = () => {
         }
       })();
     }
-  }, [dispatch, accessToken, page, size, sortOrder, sortField]);
+  }, [dispatch, accessToken, page, size, sortOrder, sortField, searchValue]);
 
 
   const [columns, setColumns] = useState([
@@ -111,17 +113,14 @@ const UsersPage = () => {
 
     
     const onSearch = (value) => {
-      (async () => {
-        try {
-          const response = await getData(`${urls.aboutUsers}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}&searchValue=${value}`);
-          const { users: usersData, total: totalData } = response;
-          dispatch(updateUsers(usersData));
-          dispatch(updateUsersTotal(totalData));
-        } catch (err) {
-          console.log(err);
-        }
-      })();
+        setSearchValue(value)
     };
+
+    const onChangeValue = (event) => {
+      if (event.target.value < 1) {
+        setSearchValue("")
+      }
+    }
    
     return (
       <>
@@ -129,6 +128,7 @@ const UsersPage = () => {
         <Input.Search
             placeholder="input search text"
             onSearch={onSearch}
+            onChange={onChangeValue}
             style={{
               width: 200,
             }}

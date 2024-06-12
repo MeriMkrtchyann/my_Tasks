@@ -33,6 +33,7 @@ const AuditsPage = () => {
   const sortField = useSelector(selectSortField);
   const defaultSort = useSelector(selectDefaultSort);
 
+  const [ searchValue , setSearchValue ] = useState("")
   const [columns, setColumns] = useState([
     {
       title: 'Հեռախոսահամար',
@@ -77,7 +78,7 @@ const AuditsPage = () => {
     if (accessToken) {
       (async () => {
         try {
-          const response = await getData(`${urls.audits}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}`);
+          const response = await getData(`${urls.audits}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}&searchValue=${searchValue}`);
           const { audits: auditsData, total: totalData } = response;
           dispatch(updateAuditsInfo(auditsData));
           dispatch(updateAuditsTotal(totalData));
@@ -86,7 +87,7 @@ const AuditsPage = () => {
         }
       })();
     }
-  }, [dispatch, accessToken, page, size, sortOrder, sortField]);
+  }, [dispatch, accessToken, page, size, sortOrder, sortField, searchValue]);
 
   const onChange = (pagination, _filters, sorter) => {
 
@@ -105,23 +106,21 @@ const AuditsPage = () => {
   };
 
   const onSearch = (value) => {
-    (async () => {
-      try {
-        const response = await getData(`${urls.audits}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}&searchValue=${value}`);
-        const { audits: auditsData, total: totalData } = response;
-        dispatch(updateAuditsInfo(auditsData));
-        dispatch(updateAuditsTotal(totalData));
-      } catch (err) {
-        console.log(err);
-      }
-    })();
-  };
+    setSearchValue(value)
+};
+
+const onChangeValue = (event) => {
+  if (event.target.value < 1) {
+    setSearchValue("")
+  }
+}
 
   return (
     <>
       <Input.Search
         placeholder="input search text"
         onSearch={onSearch}
+        onChange={onChangeValue}
         style={{
           width: 200,
         }}
