@@ -1,12 +1,14 @@
 import { createDraftSafeSelector, createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-      page : 1,
-      size : 10,
-      total : 50,
-      showSizeChanger: true,
-      pageSizeOptions: ['10', '20', '30'],
-      showQuickJumper: true,
+  page : 1,
+  size : 10,
+  total : 50,
+  sortOrder : "desc",
+  sortField :"email",
+  showSizeChanger: true,
+  pageSizeOptions: ['10', '20', '30'],
+  showQuickJumper: true,
 }
 
 export const paginationReducer = (state) => state.pagination;
@@ -31,6 +33,17 @@ export const selectPagination = createDraftSafeSelector(
   (state) => state
 );
 
+
+export const selectSortOrder = createDraftSafeSelector(
+  paginationReducer,
+  (state) => state.sortOrder
+);
+
+export const selectSortField = createDraftSafeSelector(
+  paginationReducer,
+  (state) => state.sortField
+);
+
 export const paginationSlice = createSlice({
   name: 'pagination',
   initialState,
@@ -39,12 +52,14 @@ export const paginationSlice = createSlice({
       state.page = action.payload.page;
       state.size = action.payload.size;
       state.total = action.payload.total;
+      state.sortField = action.payload.sortField
+      state.sortOrder = action.payload.sortOrder 
     },
     updatePaginationTotal : (state , action) => {
       state.total = action.payload;
-    },
+    }
   },
 })
 
-export const { updatePagination, updatePaginationTotal } = paginationSlice.actions
+export const { updatePagination, updatePaginationTotal, resetPagination } = paginationSlice.actions
 export default paginationSlice.reducer

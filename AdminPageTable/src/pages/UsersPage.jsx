@@ -6,7 +6,7 @@ import { getData } from '../api/getData';
 import { urls } from '../config/urls';
 import { selectUsers, selectUsersTotal, updateUsers } from '../../redux/slices/usersInfo/usersInfoSlice';
 import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
-import { selectPage, selectPagination, selectSize, updatePagination } from "../../redux/slices/pagination/paginationSlice"
+import { selectPage, selectSize, updatePagination } from "../../redux/slices/pagination/paginationSlice"
 
 const UsersPage = () => {
 
@@ -16,22 +16,21 @@ const UsersPage = () => {
   const total = useSelector(selectUsersTotal)
   const size = useSelector(selectSize);
   const page = useSelector(selectPage);
-  const pagination = useSelector(selectPagination)
-
+  // const pagination = useSelector(selectPagination)
 
   useEffect(() => {
-    try{
+    if (accessToken) {
       (async function () {
-        if (accessToken) {
-          const usersData = await getData(`${urls.aboutUsers}?page=${page-1}&size=${size}`)
-          dispatch(updateUsers(usersData))
-          dispatch(updatePagination({ page, size, total }))
+        try {
+          const usersData = await getData(`${urls.aboutUsers}?page=${page-1}&size=${size}`);
+          dispatch(updateUsers(usersData));
+          dispatch(updatePagination({ page, size, total }));
+        } catch (err) {
+          console.log(err);
         }
-      })()
-    }catch(err){
-      console.log(err)
+      })();
     }
-  },[dispatch, accessToken, total, size , page]);
+  }, [dispatch, accessToken, total, size, page]);
 
 
     const columns = [
@@ -43,32 +42,17 @@ const UsersPage = () => {
       {
         title: 'Հեռախոսահամար',
         dataIndex: 'username',
-        sorter: {
-          compare: (a, b) => a.email.localeCompare(b.email),
-          multiple: 3,
-        },
         align: 'center',
       },
       {
         title: 'Էլ․ փոստ',
         dataIndex: 'email',
-        sorter: {
-          compare: (a, b) => a.email.localeCompare(b.email),
-          multiple: 2,
-        },
+        sorter: true,
         align: 'center',
-        filteredValue: null,
-        onFilter : (value , record) => {
-          return record.email.includes(value);
-        }
       },
       {
         title: 'Գրանցման ամսաթիվ',
         dataIndex: 'createdAt',
-        sorter: {
-          compare: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-          multiple: 1,
-        },
         align: 'center',
       },
       {
@@ -81,37 +65,33 @@ const UsersPage = () => {
           dataIndex: 'identified',
           render: identified => (
               identified ? <CheckOutlined style={{ color: 'green' }} /> : <CloseOutlined style={{ color: 'red' }} />
-            ),
+          ),
           align: 'center',
       },
       {
           title: 'Վերջին մուտք',
           dataIndex: 'lastLogin',
-          sorter: {
-              compare: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-              multiple: 1,
-          },
+          sorter: true,
           align: 'center',
       },
     ];
 
-    const onChange = (pagination) => {
-      console.log(pagination)
-      dispatch(updatePagination({
-        page: pagination.current,
-        size: pagination.pageSize,
-        total: pagination.total,
-    }));
-    };
+    // const onChange = (pagination) => {
+    //   dispatch(updatePagination({
+    //     page: pagination.current,
+    //     size: pagination.pageSize,
+    //     total: pagination.total,
+    // }));
+    // };
    
     return (
       <>
         <Table 
             columns={columns} 
             dataSource={users} 
-            onChange={onChange} 
+            // onChange={onChange} 
             rowKey="id"
-            pagination={pagination}
+            // pagination={pagination}
         />;
       </>
     )

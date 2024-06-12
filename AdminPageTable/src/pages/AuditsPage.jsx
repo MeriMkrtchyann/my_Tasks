@@ -3,38 +3,36 @@ import { getData } from "../api/getData"
 import { useDispatch, useSelector } from "react-redux"
 import { selectAudits, selectAuditsTotal, updateAuditsInfo } from "../../redux/slices/audits/auditsSlice"
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { Table } from "antd"
 import { selectAccessToken } from "../../redux/slices/activeAdmin/activeAdminSlice"
-import { selectPage, selectPagination, selectSize, updatePagination, updatePaginationTotal } from "../../redux/slices/pagination/paginationSlice"
+import { selectPage, selectPagination, selectSize, selectSortField, selectSortOrder, updatePagination, updatePaginationTotal } from "../../redux/slices/pagination/paginationSlice"
 import { urls } from "../config/urls";
+import { Table } from 'antd';
 
-const columns = [
+const AuditsPage = () => {
+
+  const columns = [
     {
       title: 'Հեռախոսահամար',
       dataIndex: 'phoneNumber',
-      sorter: {
-        compare: (a, b) => a.email.localeCompare(b.email),
-        multiple: 3,
-      },
+      sorter: true,
       align: 'center',
     },
     {
       title: 'Էլ․ փոստ',
       dataIndex: 'email',
-      sorter: {
-        compare: (a, b) => a.email.localeCompare(b.email),
-        multiple: 2,
-      },
+      // sorter: true,
       align: 'center',
     },
     {
         title: 'Սարքավորում',
         dataIndex: 'deviceType',
+        sorter: true,
         align: 'center',
     },
     {
         title: 'Գործողություն',
         dataIndex: 'actionType',
+        sorter: true,
         align: 'center',
     },
     {
@@ -48,15 +46,10 @@ const columns = [
     {
         title: 'Ամսաթիվ',
         dataIndex: 'createdAt',
-        sorter: {
-            compare: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-            multiple: 1,
-        },
+        sorter: true,
         align: 'center',
     },
   ];
-
-const AuditsPage = () => {
   
     const dispatch = useDispatch()
     const accessToken = useSelector(selectAccessToken)
@@ -65,35 +58,51 @@ const AuditsPage = () => {
     const size = useSelector(selectSize);
     const page = useSelector(selectPage);
     const pagination = useSelector(selectPagination)
-   
-    useEffect(() => {
-       (async () => {
-        if (accessToken) {
-          const audits = await getData(`${urls.audits}?page=${page-1}&size=${size}`)
-          dispatch(updateAuditsInfo(audits));
-          dispatch(updatePaginationTotal(total))
-        }
-       })()
-    },[dispatch, accessToken, total, size , page])
+    const sortOrder = useSelector(selectSortOrder);
+    const sortField = useSelector(selectSortField)
 
-    const onChange = (pagination) => {
+    useEffect(() => {
+      if (accessToken) {
+        (async () => {
+          try {
+            console.log(page)
+            console.log(size)
+            console.log(sortField)
+            console.log(sortOrder)
+            const auditsData = await getData(`${urls.audits}?page=${page-1}&size=${size}&sortField=${sortField}&sortOrder=${sortOrder}`)//&sortField=${sortField}&sortOrder=${sortOrder}
+            dispatch(updateAuditsInfo(auditsData));
+            dispatch(updatePaginationTotal(total));
+          } catch (err) {
+            console.log(err);
+          }
+        })();
+      }
+    },[dispatch, accessToken, total, size , page, sortField, sortOrder])
+
+    const onChange = (pagination, filters, sorter, extra) => {
+      console.log(filters)
+      console.log(extra)
+      console.log("field:", sorter.field);
+      console.log("order:", sorter.order);
+
       dispatch(updatePagination({
         page: pagination.current,
         size: pagination.pageSize,
         total: pagination.total,
+        sortField: sorter.field, 
+        sortOrder: sorter.order === 'ascend' ? 'desc' : sorter.order === 'descend' ? 'asc' : 'sorter.order',
     }));
     };
 
     return (
-        <div>
-            <Table 
-                columns={columns} 
-                dataSource={audits} 
-                onChange={onChange} 
+            
+            <Table
+                columns={columns}
+                dataSource={audits}
+                onChange={onChange}
                 rowKey="id"
                 pagination={pagination}
-            />;
-        </div>
+            />
     )
 }
 
