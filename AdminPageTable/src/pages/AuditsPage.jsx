@@ -17,7 +17,7 @@ import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
 import { getData } from '../api/getData';
 import { urls } from '../config/urls';
-import { Table } from 'antd';
+import { Input, Table } from 'antd';
 import { updateSortOrderInColumns } from '../utils/utils';
 
 const AuditsPage = () => {
@@ -86,7 +86,7 @@ const AuditsPage = () => {
         }
       })();
     }
-  }, [dispatch, accessToken,total, page, size, sortOrder, sortField]);
+  }, [dispatch, accessToken, page, size, sortOrder, sortField]);
 
   const onChange = (pagination, _filters, sorter) => {
 
@@ -104,21 +104,43 @@ const AuditsPage = () => {
     setColumns(prevColumns => updateSortOrderInColumns(prevColumns, newSortField, sorter));
   };
 
+  const onSearch = (value) => {
+    (async () => {
+      try {
+        const response = await getData(`${urls.audits}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}&searchValue=${value}`);
+        const { audits: auditsData, total: totalData } = response;
+        dispatch(updateAuditsInfo(auditsData));
+        dispatch(updateAuditsTotal(totalData));
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  };
+
   return (
-    <Table
-      columns={columns}
-      dataSource={audits}
-      onChange={onChange}
-      rowKey="id"
-      pagination={{
-        current: pagination.page,
-        pageSize: pagination.size,
-        total: total,
-        showSizeChanger: pagination.showSizeChanger,
-        pageSizeOptions: pagination.pageSizeOptions,
-        showQuickJumper: pagination.showQuickJumper,
-      }}
-    />
+    <>
+      <Input.Search
+        placeholder="input search text"
+        onSearch={onSearch}
+        style={{
+          width: 200,
+        }}
+      />
+      <Table
+        columns={columns}
+        dataSource={audits}
+        onChange={onChange}
+        rowKey="id"
+        pagination={{
+          current: pagination.page,
+          pageSize: pagination.size,
+          total: total,
+          showSizeChanger: pagination.showSizeChanger,
+          pageSizeOptions: pagination.pageSizeOptions,
+          showQuickJumper: pagination.showQuickJumper,
+        }}
+      />
+    </>
   );
 };
 

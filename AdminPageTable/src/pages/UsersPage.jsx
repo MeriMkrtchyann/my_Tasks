@@ -1,4 +1,4 @@
-import { Table } from 'antd';
+import { Table, Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
@@ -47,7 +47,7 @@ const UsersPage = () => {
         }
       })();
     }
-  }, [dispatch, accessToken,total, page, size, sortOrder, sortField]);
+  }, [dispatch, accessToken, page, size, sortOrder, sortField]);
 
 
   const [columns, setColumns] = useState([
@@ -108,9 +108,31 @@ const UsersPage = () => {
   
       setColumns(prevColumns => updateSortOrderInColumns(prevColumns, newSortField, sorter));
     };
+
+    
+    const onSearch = (value) => {
+      (async () => {
+        try {
+          const response = await getData(`${urls.aboutUsers}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}&searchValue=${value}`);
+          const { users: usersData, total: totalData } = response;
+          dispatch(updateUsers(usersData));
+          dispatch(updateUsersTotal(totalData));
+        } catch (err) {
+          console.log(err);
+        }
+      })();
+    };
    
     return (
       <>
+      
+        <Input.Search
+            placeholder="input search text"
+            onSearch={onSearch}
+            style={{
+              width: 200,
+            }}
+          />
         <Table 
             columns={columns} 
             dataSource={users} 
