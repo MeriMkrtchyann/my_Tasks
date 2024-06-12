@@ -65,11 +65,9 @@ const AuditsPage = () => {
       if (accessToken) {
         (async () => {
           try {
-            console.log(page)
-            console.log(size)
             console.log(sortField)
             console.log(sortOrder)
-            const auditsData = await getData(`${urls.audits}?page=${page-1}&size=${size}&sortField=${sortField}&sortOrder=${sortOrder}`)//&sortField=${sortField}&sortOrder=${sortOrder}
+            const auditsData = await getData(`${urls.audits}?page=${page-1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}`)//&sortOrder=${sortOrder}&sortField=${sortField}
             dispatch(updateAuditsInfo(auditsData));
             dispatch(updatePaginationTotal(total));
           } catch (err) {
@@ -80,17 +78,14 @@ const AuditsPage = () => {
     },[dispatch, accessToken, total, size , page, sortField, sortOrder])
 
     const onChange = (pagination, filters, sorter, extra) => {
-      console.log(filters)
-      console.log(extra)
-      console.log("field:", sorter.field);
-      console.log("order:", sorter.order);
+      console.log('chnayel' , filters ,extra)
 
       dispatch(updatePagination({
         page: pagination.current,
         size: pagination.pageSize,
         total: pagination.total,
         sortField: sorter.field, 
-        sortOrder: sorter.order === 'ascend' ? 'desc' : sorter.order === 'descend' ? 'asc' : 'sorter.order',
+        sortOrder: sorter.order === 'ascend' ? 'desc' : sorter.order === 'descend' ? 'asc' : null,
     }));
     };
 
