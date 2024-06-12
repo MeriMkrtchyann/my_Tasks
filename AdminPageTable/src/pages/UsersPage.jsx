@@ -6,7 +6,7 @@ import { getData } from '../api/getData';
 import { urls } from '../config/urls';
 import { selectUsers, selectUsersTotal, updateUsers } from '../../redux/slices/usersInfo/usersInfoSlice';
 import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
-import { selectPage, selectSize, updatePagination } from "../../redux/slices/pagination/paginationSlice"
+// import { selectPage, selectSize } from "../../redux/slices/pagination/paginationSlice"
 
 const UsersPage = () => {
 
@@ -14,23 +14,23 @@ const UsersPage = () => {
   const accessToken = useSelector(selectAccessToken)
   const users = useSelector(selectUsers);
   const total = useSelector(selectUsersTotal)
-  const size = useSelector(selectSize);
-  const page = useSelector(selectPage);
+  // const size = useSelector(selectSize);
+  // const page = useSelector(selectPage);
   // const pagination = useSelector(selectPagination)
 
   useEffect(() => {
     if (accessToken) {
       (async function () {
         try {
-          const usersData = await getData(`${urls.aboutUsers}?page=${page-1}&size=${size}`);
+          const usersData = await getData(`${urls.aboutUsers}`);
           dispatch(updateUsers(usersData));
-          dispatch(updatePagination({ page, size, total }));
+          // dispatch(updatePagination({ page, size, total }));
         } catch (err) {
           console.log(err);
         }
       })();
     }
-  }, [dispatch, accessToken, total, size, page]);
+  }, [dispatch, accessToken, total]);
 
 
     const columns = [

@@ -1,35 +1,76 @@
-import { createDraftSafeSelector, createSlice } from '@reduxjs/toolkit'
+import { createDraftSafeSelector, createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  audits : { 
-    total : null,
+  audits: {
+    audits: [],
+    total: 0,
+    pagination: {
+      page: 1,
+      size: 10,
+      sortOrder: 'desc',
+      sortField: 'createdAt',
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '20', '30'],
+      showQuickJumper: true,
+    }
   },
-}
+};
 
-export const selectAuthReducer = (state) => state.audits
+export const selectAuditsReducer = (state) => state.audits;
 
 export const selectAudits = createDraftSafeSelector(
-  selectAuthReducer,
-  (state) => state.audits.audits,
+  selectAuditsReducer,
+  (state) => state.audits.audits
 );
 
 export const selectAuditsTotal = createDraftSafeSelector(
-  selectAuthReducer,
-  (state) => state.audits.total,
+  selectAuditsReducer,
+  (state) => state.audits.total
+);
+
+export const selectSize = createDraftSafeSelector(
+  selectAuditsReducer,
+  (state) => state.audits.pagination.size
+);
+
+export const selectPage = createDraftSafeSelector(
+  selectAuditsReducer,
+  (state) => state.audits.pagination.page
+);
+
+export const selectPagination = createDraftSafeSelector(
+  selectAuditsReducer,
+  (state) => state.audits.pagination
+);
+
+export const selectSortOrder = createDraftSafeSelector(
+  selectAuditsReducer,
+  (state) => state.audits.pagination.sortOrder
+);
+
+export const selectSortField = createDraftSafeSelector(
+  selectAuditsReducer,
+  (state) => state.audits.pagination.sortField
 );
 
 export const auditsInfoSlice = createSlice({
   name: 'audits',
   initialState,
   reducers: {
-    updateAuditsInfo : (state, action) => {
-      state.audits = action.payload;
+    updateAuditsInfo: (state, action) => {
+      state.audits.audits = action.payload;
     },
-    updateAuditsTotal : (state, action) => {
-      state.total = action.payload;
-    }
+    updateAuditsTotal: (state, action) => {
+      state.audits.total = action.payload;
+    },
+    updatePagination: (state, action) => {
+      state.audits.pagination.page = action.payload.page;
+      state.audits.pagination.size = action.payload.size;
+      state.audits.pagination.sortField = action.payload.sortField;
+      state.audits.pagination.sortOrder = action.payload.sortOrder;
+    },
   },
-})
+});
 
-export const { updateAuditsInfo , updateAuditsTotal  } = auditsInfoSlice.actions
-export default auditsInfoSlice.reducer
+export const { updateAuditsInfo, updateAuditsTotal, updatePagination } = auditsInfoSlice.actions;
+export default auditsInfoSlice.reducer;

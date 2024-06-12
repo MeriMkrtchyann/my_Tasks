@@ -1,15 +1,24 @@
-import { useEffect } from "react"
-import { getData } from "../api/getData"
-import { useDispatch, useSelector } from "react-redux"
-import { selectAudits, selectAuditsTotal, updateAuditsInfo } from "../../redux/slices/audits/auditsSlice"
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { 
+  selectAudits, 
+  selectAuditsTotal, 
+  selectPage, 
+  selectPagination, 
+  selectSize, 
+  selectSortField, 
+  selectSortOrder, 
+  updateAuditsInfo, 
+  updateAuditsTotal, 
+  updatePagination 
+} from '../../redux/slices/audits/auditsSlice';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { selectAccessToken } from "../../redux/slices/activeAdmin/activeAdminSlice"
-import { selectPage, selectPagination, selectSize, selectSortField, selectSortOrder, updatePagination, updatePaginationTotal } from "../../redux/slices/pagination/paginationSlice"
-import { urls } from "../config/urls";
+import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
+import { getData } from '../api/getData';
+import { urls } from '../config/urls';
 import { Table } from 'antd';
 
 const AuditsPage = () => {
-
   const columns = [
     {
       title: 'Հեռախոսահամար',
@@ -23,79 +32,82 @@ const AuditsPage = () => {
       align: 'center',
     },
     {
-        title: 'Սարքավորում',
-        dataIndex: 'deviceType',
-        align: 'center',
+      title: 'Սարքավորում',
+      dataIndex: 'deviceType',
+      align: 'center',
     },
     {
-        title: 'Գործողություն',
-        dataIndex: 'actionType',
-        sorter: true,
-        align: 'center',
+      title: 'Գործողություն',
+      dataIndex: 'actionType',
+      sorter: true,
+      align: 'center',
     },
     {
-        title: 'Կարգավիճակ',
-        dataIndex: 'successful',
-        render: successful => (
-            successful ? <CheckOutlined style={{ color: 'green' }} /> : <CloseOutlined style={{ color: 'red' }} />
-          ),
-        align: 'center',
+      title: 'Կարգավիճակ',
+      dataIndex: 'successful',
+      render: successful => (
+        successful ? <CheckOutlined style={{ color: 'green' }} /> : <CloseOutlined style={{ color: 'red' }} />
+      ),
+      align: 'center',
     },
     {
-        title: 'Ամսաթիվ',
-        dataIndex: 'createdAt',
-        sorter: true,
-        align: 'center',
+      title: 'Ամսաթիվ',
+      dataIndex: 'createdAt',
+      sorter: true,
+      align: 'center',
     },
   ];
-  
-    const dispatch = useDispatch()
-    const accessToken = useSelector(selectAccessToken)
-    const audits = useSelector(selectAudits);
-    const total = useSelector(selectAuditsTotal)
-    const size = useSelector(selectSize);
-    const page = useSelector(selectPage);
-    const pagination = useSelector(selectPagination)
-    const sortOrder = useSelector(selectSortOrder);
-    const sortField = useSelector(selectSortField)
 
-    useEffect(() => {
-      if (accessToken) {
-        (async () => {
-          try {
-            console.log(sortOrder)
-            console.log(sortField)
-            const auditsData = await getData(`${urls.audits}?page=${page-1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}`)//&sortOrder=${sortOrder}&sortField=${sortField}
-            dispatch(updateAuditsInfo(auditsData));
-            dispatch(updatePaginationTotal(total));
-          } catch (err) {
-            console.log(err);
-          }
-        })();
-      }
-    },[dispatch, accessToken, total, size , page, sortField, sortOrder])
+  const dispatch = useDispatch();
+  const accessToken = useSelector(selectAccessToken);
+  const audits = useSelector(selectAudits);
+  const total = useSelector(selectAuditsTotal);
+  const size = useSelector(selectSize);
+  const page = useSelector(selectPage);
+  const pagination = useSelector(selectPagination);
+  const sortOrder = useSelector(selectSortOrder);
+  const sortField = useSelector(selectSortField);
 
-    const onChange = (pagination, filters, sorter, extra) => {
-      console.log('chnayel' , filters ,extra)
-      console.log(sorter.order)
-      dispatch(updatePagination({
-        page: pagination.current,
-        size: pagination.pageSize,
-        total: pagination.total,
-        sortField: sorter.field, 
-        sortOrder: sorter.order === 'ascend' ? 'desc' : 'asc' 
-      }));
-    };
+  useEffect(() => {
+    if (accessToken) {
+      (async () => {
+        try {
+          const response = await getData(`${urls.audits}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}`, accessToken);
+          const { audits: auditsData, total: totalData } = response;
+          dispatch(updateAuditsInfo(auditsData));
+          dispatch(updateAuditsTotal(totalData));
+        } catch (err) {
+          console.log(err);
+        }
+      })();
+    }
+  }, [dispatch, accessToken, page, size, sortOrder, sortField]);
 
-    return (
-      <Table
-          columns={columns}
-          dataSource={audits}
-          onChange={onChange}
-          rowKey="id"
-          pagination={pagination}
-      />
-    )
-}
+  const onChange = (pagination, _filters, sorter) => {
+    dispatch(updatePagination({
+      page: pagination.current,
+      size: pagination.pageSize,
+      sortOrder: sorter.order === 'ascend' ? 'asc' : 'desc',
+      sortField: sorter.field || "createdAt"
+    }));
+  };
 
-export { AuditsPage } 
+  return (
+    <Table
+      columns={columns}
+      dataSource={audits}
+      onChange={onChange}
+      rowKey="id"
+      pagination={{
+        current: pagination.page,
+        pageSize: pagination.size,
+        total: total,
+        showSizeChanger: pagination.showSizeChanger,
+        pageSizeOptions: pagination.pageSizeOptions,
+        showQuickJumper: pagination.showQuickJumper,
+      }}
+    />
+  );
+};
+
+export { AuditsPage };
