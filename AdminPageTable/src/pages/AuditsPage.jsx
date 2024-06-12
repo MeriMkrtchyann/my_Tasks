@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
   selectAudits, 
@@ -6,7 +6,8 @@ import {
   selectPage, 
   selectPagination, 
   selectSize, 
-  selectSortField, 
+  selectSortField,
+  selectDefaultSort,
   selectSortOrder, 
   updateAuditsInfo, 
   updateAuditsTotal, 
@@ -17,9 +18,22 @@ import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSli
 import { getData } from '../api/getData';
 import { urls } from '../config/urls';
 import { Table } from 'antd';
+import { updateSortOrderInColumns } from '../utils/utils';
 
 const AuditsPage = () => {
-  const columns = [
+
+  const dispatch = useDispatch();
+  const accessToken = useSelector(selectAccessToken);
+  const audits = useSelector(selectAudits);
+  const total = useSelector(selectAuditsTotal);
+  const size = useSelector(selectSize);
+  const page = useSelector(selectPage);
+  const pagination = useSelector(selectPagination);
+  const sortOrder = useSelector(selectSortOrder);
+  const sortField = useSelector(selectSortField);
+  const defaultSort = useSelector(selectDefaultSort);
+
+  const [columns, setColumns] = useState([
     {
       title: 'Հեռախոսահամար',
       dataIndex: 'phoneNumber',
@@ -55,18 +69,9 @@ const AuditsPage = () => {
       dataIndex: 'createdAt',
       sorter: true,
       align: 'center',
+      sortOrder : defaultSort
     },
-  ];
-
-  const dispatch = useDispatch();
-  const accessToken = useSelector(selectAccessToken);
-  const audits = useSelector(selectAudits);
-  const total = useSelector(selectAuditsTotal);
-  const size = useSelector(selectSize);
-  const page = useSelector(selectPage);
-  const pagination = useSelector(selectPagination);
-  const sortOrder = useSelector(selectSortOrder);
-  const sortField = useSelector(selectSortField);
+  ]);
 
   useEffect(() => {
     if (accessToken) {
@@ -84,12 +89,19 @@ const AuditsPage = () => {
   }, [dispatch, accessToken,total, page, size, sortOrder, sortField]);
 
   const onChange = (pagination, _filters, sorter) => {
+
+    const newSortOrder = sorter.order === 'ascend' ? 'asc' : 'desc';
+    const newSortField = sorter.field || "createdAt";
+
     dispatch(updatePagination({
       page: pagination.current,
       size: pagination.pageSize,
-      sortOrder: sorter.order === 'ascend' ? 'asc' : 'desc',
-      sortField: sorter.field || "createdAt"
+      sortOrder: newSortOrder,
+      sortField: newSortField,
+      defaultSort: null, 
     }));
+
+    setColumns(prevColumns => updateSortOrderInColumns(prevColumns, newSortField, sorter));
   };
 
   return (

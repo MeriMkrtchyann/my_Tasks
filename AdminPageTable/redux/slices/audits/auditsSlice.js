@@ -9,6 +9,7 @@ const initialState = {
       size: 10,
       sortOrder: 'desc',
       sortField: 'createdAt',
+      defaultSort: 'ascend',
       showSizeChanger: true,
       pageSizeOptions: ['10', '20', '30'],
       showQuickJumper: true,
@@ -36,6 +37,11 @@ export const selectSize = createDraftSafeSelector(
 export const selectPage = createDraftSafeSelector(
   selectAuditsReducer,
   (state) => state.audits.pagination.page
+);
+
+export const selectDefaultSort = createDraftSafeSelector(
+  selectAuditsReducer,
+  (state) => state.audits.pagination.defaultSort
 );
 
 export const selectPagination = createDraftSafeSelector(
@@ -68,6 +74,7 @@ export const auditsInfoSlice = createSlice({
       state.audits.pagination.size = action.payload.size;
       state.audits.pagination.sortField = action.payload.sortField;
       state.audits.pagination.sortOrder = action.payload.sortOrder;
+      state.audits.pagination.defaultSort = action.payload.defaultSort ?? null;
     },
   },
 });

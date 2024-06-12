@@ -9,6 +9,7 @@ const initialState = {
       size: 10,
       sortOrder: 'desc',
       sortField: 'createdAt',
+      defaultSort: 'ascend',
       showSizeChanger: true,
       pageSizeOptions: ['10', '20', '30'],
       showQuickJumper: true,
@@ -54,6 +55,11 @@ export const selectSortField = createDraftSafeSelector(
   (state) => state.users.pagination.sortField
 );
 
+export const selectDefaultSort = createDraftSafeSelector(
+  selectAuthReducer,
+  (state) => state.users.pagination.defaultSort
+);
+
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
@@ -64,11 +70,13 @@ export const usersSlice = createSlice({
     updateUsersTotal : (state, action) => {
       state.users.total = action.payload;
     },
+    
     updatePagination: (state, action) => {
       state.users.pagination.page = action.payload.page;
       state.users.pagination.size = action.payload.size;
       state.users.pagination.sortField = action.payload.sortField;
       state.users.pagination.sortOrder = action.payload.sortOrder;
+      state.users.pagination.defaultSort = action.payload.defaultSort ?? null;
     },
   },
 })

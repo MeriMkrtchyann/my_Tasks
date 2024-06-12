@@ -1,7 +1,7 @@
 import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getData } from '../api/getData';
 import { urls } from '../config/urls';
 import { 
@@ -11,12 +11,15 @@ import {
   selectPagination, 
   selectSize, 
   selectSortField, 
+  selectDefaultSort,
   selectSortOrder, 
   updatePagination,
   updateUsers, 
   updateUsersTotal, 
+  
   } from '../../redux/slices/usersInfo/usersInfoSlice';
 import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
+import { updateSortOrderInColumns } from '../utils/utils';
 
 const UsersPage = () => {
 
@@ -29,6 +32,7 @@ const UsersPage = () => {
   const pagination = useSelector(selectPagination);
   const sortOrder = useSelector(selectSortOrder);
   const sortField = useSelector(selectSortField);
+  const defaultSort = useSelector(selectDefaultSort);
 
   useEffect(() => {
     if (accessToken) {
@@ -46,7 +50,7 @@ const UsersPage = () => {
   }, [dispatch, accessToken,total, page, size, sortOrder, sortField]);
 
 
-    const columns = [
+  const [columns, setColumns] = useState([
       {
         title: 'Անուն Ազգանուն',
         dataIndex: 'fullName',
@@ -85,17 +89,24 @@ const UsersPage = () => {
           title: 'Վերջին մուտք',
           dataIndex: 'lastLogin',
           sorter: true,
+          sortOrder: defaultSort,
           align: 'center',
       },
-    ];
+    ]);
 
     const onChange = (pagination, _filters, sorter) => {
+      const newSortOrder = sorter.order === 'ascend' ? 'asc' : 'desc';
+      const newSortField = sorter.field || "createdAt";
+  
       dispatch(updatePagination({
         page: pagination.current,
         size: pagination.pageSize,
-        sortOrder: sorter.order === 'ascend' ? 'asc' : 'desc',
-        sortField: sorter.field || "createdAt"
+        sortOrder: newSortOrder,
+        sortField: newSortField,
+        defaultSort: null, 
       }));
+  
+      setColumns(prevColumns => updateSortOrderInColumns(prevColumns, newSortField, sorter));
     };
    
     return (
