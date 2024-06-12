@@ -5,7 +5,7 @@ const initialState = {
   size : 10,
   total : 50,
   sortOrder : "desc",
-  sortField :"email",
+  sortField :"createdAt",
   showSizeChanger: true,
   pageSizeOptions: ['10', '20', '30'],
   showQuickJumper: true,

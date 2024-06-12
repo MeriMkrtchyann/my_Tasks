@@ -20,13 +20,11 @@ const AuditsPage = () => {
     {
       title: 'Էլ․ փոստ',
       dataIndex: 'email',
-      // sorter: true,
       align: 'center',
     },
     {
         title: 'Սարքավորում',
         dataIndex: 'deviceType',
-        sorter: true,
         align: 'center',
     },
     {
@@ -65,8 +63,8 @@ const AuditsPage = () => {
       if (accessToken) {
         (async () => {
           try {
-            console.log(sortField)
             console.log(sortOrder)
+            console.log(sortField)
             const auditsData = await getData(`${urls.audits}?page=${page-1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}`)//&sortOrder=${sortOrder}&sortField=${sortField}
             dispatch(updateAuditsInfo(auditsData));
             dispatch(updatePaginationTotal(total));
@@ -79,25 +77,24 @@ const AuditsPage = () => {
 
     const onChange = (pagination, filters, sorter, extra) => {
       console.log('chnayel' , filters ,extra)
-
+      console.log(sorter.order)
       dispatch(updatePagination({
         page: pagination.current,
         size: pagination.pageSize,
         total: pagination.total,
         sortField: sorter.field, 
-        sortOrder: sorter.order === 'ascend' ? 'desc' : sorter.order === 'descend' ? 'asc' : null,
-    }));
+        sortOrder: sorter.order === 'ascend' ? 'desc' : 'asc' 
+      }));
     };
 
     return (
-            
-            <Table
-                columns={columns}
-                dataSource={audits}
-                onChange={onChange}
-                rowKey="id"
-                pagination={pagination}
-            />
+      <Table
+          columns={columns}
+          dataSource={audits}
+          onChange={onChange}
+          rowKey="id"
+          pagination={pagination}
+      />
     )
 }
 
