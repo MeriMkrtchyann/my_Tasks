@@ -2,21 +2,56 @@ import { createDraftSafeSelector, createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   users : { 
-    total : null,
+    users: [],
+    total: 0,
+    pagination: {
+      page: 1,
+      size: 10,
+      sortOrder: 'desc',
+      sortField: 'createdAt',
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '20', '30'],
+      showQuickJumper: true,
+    }
   },
   
 }
 
-export const selectAuthReducer = (state) => state.users.users;
+export const selectAuthReducer = (state) => state.users;
 
 export const selectUsers = createDraftSafeSelector(
   selectAuthReducer,
-  (state) => state.users,
+  (state) => state.users.users,
 );
 
 export const selectUsersTotal = createDraftSafeSelector(
   selectAuthReducer,
-  (state) => state.total
+  (state) => state.users.total
+);
+
+export const selectSize = createDraftSafeSelector(
+  selectAuthReducer,
+  (state) => state.users.pagination.size
+);
+
+export const selectPage = createDraftSafeSelector(
+  selectAuthReducer,
+  (state) => state.users.pagination.page
+);
+
+export const selectPagination = createDraftSafeSelector(
+  selectAuthReducer,
+  (state) => state.users.pagination
+);
+
+export const selectSortOrder = createDraftSafeSelector(
+  selectAuthReducer,
+  (state) => state.users.pagination.sortOrder
+);
+
+export const selectSortField = createDraftSafeSelector(
+  selectAuthReducer,
+  (state) => state.users.pagination.sortField
 );
 
 export const usersSlice = createSlice({
@@ -24,13 +59,19 @@ export const usersSlice = createSlice({
   initialState,
   reducers: {
     updateUsers : (state, action) => {
-      state.users = action.payload;
+      state.users.users = action.payload;
     },
     updateUsersTotal : (state, action) => {
-      state.total = action.payload;
+      state.users.total = action.payload;
+    },
+    updatePagination: (state, action) => {
+      state.users.pagination.page = action.payload.page;
+      state.users.pagination.size = action.payload.size;
+      state.users.pagination.sortField = action.payload.sortField;
+      state.users.pagination.sortOrder = action.payload.sortOrder;
     },
   },
 })
 
-export const { updateUsers, updateUsersTotal } = usersSlice.actions
+export const { updateUsers, updateUsersTotal, updatePagination } = usersSlice.actions
 export default usersSlice.reducer

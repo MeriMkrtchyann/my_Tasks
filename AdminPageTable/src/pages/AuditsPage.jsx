@@ -72,7 +72,7 @@ const AuditsPage = () => {
     if (accessToken) {
       (async () => {
         try {
-          const response = await getData(`${urls.audits}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}`, accessToken);
+          const response = await getData(`${urls.audits}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}`);
           const { audits: auditsData, total: totalData } = response;
           dispatch(updateAuditsInfo(auditsData));
           dispatch(updateAuditsTotal(totalData));
@@ -81,7 +81,7 @@ const AuditsPage = () => {
         }
       })();
     }
-  }, [dispatch, accessToken, page, size, sortOrder, sortField]);
+  }, [dispatch, accessToken,total, page, size, sortOrder, sortField]);
 
   const onChange = (pagination, _filters, sorter) => {
     dispatch(updatePagination({

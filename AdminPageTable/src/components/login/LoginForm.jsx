@@ -31,7 +31,8 @@ function LoginForm() {
                 const adminData = await getData(urls.aboutAdmin)
                 dispatch(updateAdminInfo(adminData));
                 const usersData = await getData(urls.aboutUsers)
-                dispatch(updateUsers(usersData))
+                console.log(usersData.users)
+                dispatch(updateUsers(usersData.users))
                 navigate(routes.admin);
             }
         } catch (error) {

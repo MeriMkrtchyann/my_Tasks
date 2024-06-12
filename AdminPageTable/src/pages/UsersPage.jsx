@@ -4,9 +4,19 @@ import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { getData } from '../api/getData';
 import { urls } from '../config/urls';
-import { selectUsers, selectUsersTotal, updateUsers } from '../../redux/slices/usersInfo/usersInfoSlice';
+import { 
+  selectUsers, 
+  selectUsersTotal, 
+  selectPage, 
+  selectPagination, 
+  selectSize, 
+  selectSortField, 
+  selectSortOrder, 
+  updatePagination,
+  updateUsers, 
+  updateUsersTotal, 
+  } from '../../redux/slices/usersInfo/usersInfoSlice';
 import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
-// import { selectPage, selectSize } from "../../redux/slices/pagination/paginationSlice"
 
 const UsersPage = () => {
 
@@ -14,23 +24,26 @@ const UsersPage = () => {
   const accessToken = useSelector(selectAccessToken)
   const users = useSelector(selectUsers);
   const total = useSelector(selectUsersTotal)
-  // const size = useSelector(selectSize);
-  // const page = useSelector(selectPage);
-  // const pagination = useSelector(selectPagination)
+  const size = useSelector(selectSize);
+  const page = useSelector(selectPage);
+  const pagination = useSelector(selectPagination);
+  const sortOrder = useSelector(selectSortOrder);
+  const sortField = useSelector(selectSortField);
 
   useEffect(() => {
     if (accessToken) {
       (async function () {
         try {
-          const usersData = await getData(`${urls.aboutUsers}`);
+          const response = await getData(`${urls.aboutUsers}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}`);
+          const { users: usersData, total: totalData } = response;
           dispatch(updateUsers(usersData));
-          // dispatch(updatePagination({ page, size, total }));
+          dispatch(updateUsersTotal(totalData));
         } catch (err) {
           console.log(err);
         }
       })();
     }
-  }, [dispatch, accessToken, total]);
+  }, [dispatch, accessToken,total, page, size, sortOrder, sortField]);
 
 
     const columns = [
@@ -76,22 +89,30 @@ const UsersPage = () => {
       },
     ];
 
-    // const onChange = (pagination) => {
-    //   dispatch(updatePagination({
-    //     page: pagination.current,
-    //     size: pagination.pageSize,
-    //     total: pagination.total,
-    // }));
-    // };
+    const onChange = (pagination, _filters, sorter) => {
+      dispatch(updatePagination({
+        page: pagination.current,
+        size: pagination.pageSize,
+        sortOrder: sorter.order === 'ascend' ? 'asc' : 'desc',
+        sortField: sorter.field || "createdAt"
+      }));
+    };
    
     return (
       <>
         <Table 
             columns={columns} 
             dataSource={users} 
-            // onChange={onChange} 
+            onChange={onChange} 
             rowKey="id"
-            // pagination={pagination}
+            pagination={{
+              current: pagination.page,
+              pageSize: pagination.size,
+              total: total,
+              showSizeChanger: pagination.showSizeChanger,
+              pageSizeOptions: pagination.pageSizeOptions,
+              showQuickJumper: pagination.showQuickJumper,
+            }}
         />;
       </>
     )
