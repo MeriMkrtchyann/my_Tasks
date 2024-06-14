@@ -2,7 +2,8 @@ import { createDraftSafeSelector, createSlice } from '@reduxjs/toolkit'
 import { apiSlice } from '../../../src/api/apiSlice';
 
 const initialState = {
-    userId : null
+  documents : [],
+  userId : null
 }
 
 export const selectAuthReducer = (state) => state.usersDetails;
@@ -27,7 +28,8 @@ export const usersDetailsSlice = createSlice({
       })
       .addMatcher(apiSlice.endpoints.getUserById.matchFulfilled, (state, action) => {
         console.log("matchFulfilled")
-        state.userId = action.payload;
+        state.userId = action.payload.user.id
+        state.documents = action.payload.user.documents
       })
       .addMatcher(apiSlice.endpoints.getUsers.matchRejected, () => {
         console.log("matchRejected")
