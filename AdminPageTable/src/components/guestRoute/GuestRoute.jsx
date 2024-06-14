@@ -3,12 +3,12 @@ import { Navigate } from 'react-router-dom'
 import { selectAccessToken } from '../../../redux/slices/activeAdmin/activeAdminSlice';
 import { routes } from '../../config/routes';
 
-const ProtectedRoute = (prop) => {
+const GuestRoute = (prop) => {
   const { element } = prop
   const accessToken = useSelector(selectAccessToken)
 
-  return accessToken ? element : <Navigate to={routes.login}/>
+  return accessToken ? <Navigate to={routes.admin}/> :element 
  
 };
 
-export { ProtectedRoute }
+export { GuestRoute }
