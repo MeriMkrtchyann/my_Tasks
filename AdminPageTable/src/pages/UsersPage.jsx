@@ -16,6 +16,8 @@ import {
 import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
 import { updateSortOrderInColumns } from '../utils/utils';
 import { useGetUsersMutation } from '../api/apiSlice';
+import { updateId } from '../../redux/slices/usersDetails/usersDetailsSlice';
+import { useNavigate } from 'react-router-dom';
 
 const UsersPage = () => {
 
@@ -31,7 +33,9 @@ const UsersPage = () => {
   const sortField = useSelector(selectSortField);
   const defaultSort = useSelector(selectDefaultSort);
 
+
   const [ searchValue , setSearchValue ] = useState("")
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (accessToken) {
@@ -45,12 +49,20 @@ const UsersPage = () => {
     }
   }, [accessToken, page, size, sortOrder, sortField, searchValue, getUsers]);
 
-
   const [columns, setColumns] = useState([
       {
         title: 'Անուն Ազգանուն',
         dataIndex: 'fullName',
         align: 'center',
+        render: (text, record) => (
+          <a onClick={() => {
+            console.log(record)
+            dispatch(updateId(record.id))
+            navigate(`/admin/users/${record.id}`)
+          }}>
+            {text}
+          </a>
+        ),
       },
       {
         title: 'Հեռախոսահամար',
@@ -101,11 +113,9 @@ const UsersPage = () => {
         sortField: newSortField,
         defaultSort: null, 
       }));
-  
       setColumns(prevColumns => updateSortOrderInColumns(prevColumns, newSortField, sorter));
     };
 
-    
     const onSearch = (value) => {
         setSearchValue(value)
     };

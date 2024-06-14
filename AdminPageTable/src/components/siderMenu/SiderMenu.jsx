@@ -22,7 +22,7 @@ const SiderMenu = () => {
     const siderMenu = [
         getItem('Օգտատեր', '1', <UserOutlined />, null , routes.users),
         getItem('Գործողություններր', '2', <HistoryOutlined />, null , routes.audits),
-      ];
+    ];
       
     return(
         <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
