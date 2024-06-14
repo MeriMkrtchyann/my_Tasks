@@ -1,4 +1,5 @@
 import { createDraftSafeSelector, createSlice } from '@reduxjs/toolkit'
+import { apiSlice } from '../../../src/api/apiSlice';
 
 const initialState = {
   users : { 
@@ -64,13 +65,6 @@ export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    updateUsers : (state, action) => {
-      state.users.users = action.payload;
-    },
-    updateUsersTotal : (state, action) => {
-      state.users.total = action.payload;
-    },
-    
     updatePagination: (state, action) => {
       state.users.pagination.page = action.payload.page;
       state.users.pagination.size = action.payload.size;
@@ -78,6 +72,20 @@ export const usersSlice = createSlice({
       state.users.pagination.sortOrder = action.payload.sortOrder;
       state.users.pagination.defaultSort = action.payload.defaultSort ?? null;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addMatcher(apiSlice.endpoints.getUsers.matchPending, () => {
+        console.log('matchPending')
+      })
+      .addMatcher(apiSlice.endpoints.getUsers.matchFulfilled, (state, action) => {
+        console.log("matchFulfilled")
+        state.users.users = action.payload.users;
+        state.users.total = action.payload.total;
+      })
+      .addMatcher(apiSlice.endpoints.getUsers.matchRejected, () => {
+        console.log("matchRejected")
+      });
   },
 })
 

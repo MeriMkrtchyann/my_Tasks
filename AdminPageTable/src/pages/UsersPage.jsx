@@ -2,8 +2,6 @@ import { Table, Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import { getData } from '../api/getData';
-import { urls } from '../config/urls';
 import { 
   selectUsers, 
   selectUsersTotal, 
@@ -14,16 +12,15 @@ import {
   selectDefaultSort,
   selectSortOrder, 
   updatePagination,
-  updateUsers, 
-  updateUsersTotal, 
-  
   } from '../../redux/slices/usersInfo/usersInfoSlice';
 import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
 import { updateSortOrderInColumns } from '../utils/utils';
+import { useGetUsersMutation } from '../api/apiSlice';
 
 const UsersPage = () => {
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const [getUsers] = useGetUsersMutation()
   const accessToken = useSelector(selectAccessToken)
   const users = useSelector(selectUsers);
   const total = useSelector(selectUsersTotal)
@@ -38,18 +35,15 @@ const UsersPage = () => {
 
   useEffect(() => {
     if (accessToken) {
-      (async function () {
-        try {
-          const response = await getData(`${urls.aboutUsers}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}&searchValue=${searchValue}`);
-          const { users: usersData, total: totalData } = response;
-          dispatch(updateUsers(usersData));
-          dispatch(updateUsersTotal(totalData));
-        } catch (err) {
-          console.log(err);
-        }
-      })();
+      getUsers({
+        page: page - 1,
+        size,
+        sortOrder,
+        sortField,
+        searchValue,
+      })
     }
-  }, [dispatch, accessToken, page, size, sortOrder, sortField, searchValue]);
+  }, [accessToken, page, size, sortOrder, sortField, searchValue, getUsers]);
 
 
   const [columns, setColumns] = useState([
@@ -117,14 +111,13 @@ const UsersPage = () => {
     };
 
     const onChangeValue = (event) => {
-      if (event.target.value < 1) {
+      if (!event.target.value) {
         setSearchValue("")
       }
     }
    
     return (
       <>
-      
         <Input.Search
             placeholder="input search text"
             onSearch={onSearch}

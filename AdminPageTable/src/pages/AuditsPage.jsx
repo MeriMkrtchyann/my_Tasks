@@ -9,16 +9,13 @@ import {
   selectSortField,
   selectDefaultSort,
   selectSortOrder, 
-  updateAuditsInfo, 
-  updateAuditsTotal, 
   updatePagination 
 } from '../../redux/slices/audits/auditsSlice';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
-import { getData } from '../api/getData';
-import { urls } from '../config/urls';
 import { Input, Table } from 'antd';
 import { updateSortOrderInColumns } from '../utils/utils';
+import {useGetAuditsMutation } from '../api/apiSlice.js'
 
 const AuditsPage = () => {
 
@@ -32,8 +29,9 @@ const AuditsPage = () => {
   const sortOrder = useSelector(selectSortOrder);
   const sortField = useSelector(selectSortField);
   const defaultSort = useSelector(selectDefaultSort);
-
   const [ searchValue , setSearchValue ] = useState("")
+  const [getAudits] = useGetAuditsMutation()
+
   const [columns, setColumns] = useState([
     {
       title: 'Հեռախոսահամար',
@@ -76,18 +74,15 @@ const AuditsPage = () => {
 
   useEffect(() => {
     if (accessToken) {
-      (async () => {
-        try {
-          const response = await getData(`${urls.audits}?page=${page - 1}&size=${size}&sortOrder=${sortOrder}&sortField=${sortField}&searchValue=${searchValue}`);
-          const { audits: auditsData, total: totalData } = response;
-          dispatch(updateAuditsInfo(auditsData));
-          dispatch(updateAuditsTotal(totalData));
-        } catch (err) {
-          console.log(err);
-        }
-      })();
+      getAudits({
+        page: page - 1,
+        size,
+        sortOrder,
+        sortField,
+        searchValue,
+      })
     }
-  }, [dispatch, accessToken, page, size, sortOrder, sortField, searchValue]);
+  }, [accessToken, page, size, sortOrder, sortField, searchValue, getAudits]);
 
   const onChange = (pagination, _filters, sorter) => {
 
@@ -95,7 +90,7 @@ const AuditsPage = () => {
     const newSortField = sorter.field || "createdAt";
 
     dispatch(updatePagination({
-      page: pagination.current,
+      page: pagination.current ,
       size: pagination.pageSize,
       sortOrder: newSortOrder,
       sortField: newSortField,
@@ -110,7 +105,7 @@ const AuditsPage = () => {
 };
 
 const onChangeValue = (event) => {
-  if (event.target.value < 1) {
+  if (!event.target.value) {
     setSearchValue("")
   }
 }

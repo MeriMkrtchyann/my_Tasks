@@ -1,4 +1,5 @@
 import { createDraftSafeSelector, createSlice } from '@reduxjs/toolkit';
+import { apiSlice } from '../../../src/api/apiSlice';
 
 const initialState = {
   audits: {
@@ -63,12 +64,6 @@ export const auditsInfoSlice = createSlice({
   name: 'audits',
   initialState,
   reducers: {
-    updateAuditsInfo: (state, action) => {
-      state.audits.audits = action.payload;
-    },
-    updateAuditsTotal: (state, action) => {
-      state.audits.total = action.payload;
-    },
     updatePagination: (state, action) => {
       state.audits.pagination.page = action.payload.page;
       state.audits.pagination.size = action.payload.size;
@@ -77,7 +72,21 @@ export const auditsInfoSlice = createSlice({
       state.audits.pagination.defaultSort = action.payload.defaultSort ?? null;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addMatcher(apiSlice.endpoints.getAudits.matchPending, () => {
+        console.log('matchPending')
+      })
+      .addMatcher(apiSlice.endpoints.getAudits.matchFulfilled, (state, action) => {
+        console.log('matchFulfilled')
+        state.audits.audits = action.payload.audits;
+        state.audits.total = action.payload.total;
+      })
+      .addMatcher(apiSlice.endpoints.getAudits.matchRejected, () => {
+        console.log('matchRejected')
+      });
+  },
 });
 
-export const { updateAuditsInfo, updateAuditsTotal, updatePagination } = auditsInfoSlice.actions;
+export const { updatePagination } = auditsInfoSlice.actions;
 export default auditsInfoSlice.reducer;
