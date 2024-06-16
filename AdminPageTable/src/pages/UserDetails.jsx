@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Card } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import { selectUserId } from '../../redux/slices/usersDetails/usersDetailsSlice';
+import { selectUser, selectUserDocuments, selectUserId } from '../../redux/slices/usersDetails/usersDetailsSlice';
 import { useSelector } from 'react-redux';
 import { useGetUserByIdMutation } from '../api/apiSlice';
+import PersonalInfo from './PersonalInfo';
+import OtherInfo from './OtherInfo';
 
 const tabList = [
   {
@@ -17,27 +18,21 @@ const tabList = [
 ];
 
 const A = () => {
-
-  const [data] = useGetUserByIdMutation()
+  const [userDetails] = useGetUserByIdMutation()
   const userId = useSelector(selectUserId);
+  const user = useSelector(selectUser);
+  const documents = useSelector(selectUserDocuments);
 
   useEffect(()=>{
-    data({
-      userId
-      }  
-    )
-  },[userId,data])
+    userDetails({ userId })
+  },[userId,userDetails])
+  console.log(documents)
 
-    return(
-        <Card
-            title={<><UserOutlined /> Անձնական տվյալներ</>}
-                bordered={false}
-                style={{
-                width: 300,
-            }}
-        >
-            <p>{userId}</p>
-        </Card>
+  return(
+      <div style={{display: 'flex' , gap:20}}>
+        <PersonalInfo user={user} documents={documents}/>
+        <OtherInfo user={user} documents={documents}/>
+      </div>
     )
 }
 

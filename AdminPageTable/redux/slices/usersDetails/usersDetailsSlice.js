@@ -3,7 +3,8 @@ import { apiSlice } from '../../../src/api/apiSlice';
 
 const initialState = {
   documents : [],
-  userId : null
+  userId : null,
+  user: {},
 }
 
 export const selectAuthReducer = (state) => state.usersDetails;
@@ -11,6 +12,16 @@ export const selectAuthReducer = (state) => state.usersDetails;
 export const selectUserId = createDraftSafeSelector(
   selectAuthReducer,
   (state) => state.userId
+);
+
+export const selectUser = createDraftSafeSelector(
+  selectAuthReducer,
+  (state) => state.user
+);
+
+export const selectUserDocuments = createDraftSafeSelector(
+  selectAuthReducer,
+  (state) => state.documents
 );
 
 export const usersDetailsSlice = createSlice({
@@ -29,7 +40,8 @@ export const usersDetailsSlice = createSlice({
       .addMatcher(apiSlice.endpoints.getUserById.matchFulfilled, (state, action) => {
         console.log("matchFulfilled")
         state.userId = action.payload.user.id
-        state.documents = action.payload.user.documents
+        state.user = action.payload.user
+        state.documents = action.payload.documents
       })
       .addMatcher(apiSlice.endpoints.getUsers.matchRejected, () => {
         console.log("matchRejected")
