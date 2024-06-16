@@ -1,7 +1,13 @@
 import { Card, Table } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
+import { selectUser, selectUserDocuments } from '../../../redux/slices/usersDetails/usersDetailsSlice';
 
-const PersonalInfo = ( user, documents ) => {
+const PersonalInfo = ( ) => {
+
+  const user = useSelector(selectUser);
+  const documents = useSelector(selectUserDocuments);
+
   const userInfoColumns = [
     {
       title: 'Դաշտ',
@@ -19,7 +25,7 @@ const PersonalInfo = ( user, documents ) => {
     {
       key: '1',
       field: 'Անուն Ազգանուն',
-      value: `${user?.firstName} ${user?.lastName}`,
+      value: user?.fullName,
     },
     {
       key: '2',
@@ -29,7 +35,7 @@ const PersonalInfo = ( user, documents ) => {
     {
       key: '3',
       field: 'Հեռախոսահամար',
-      value: user?.phoneNumber ?? "-",
+      value: user?.username ?? "-",
     },
     {
       key: '4',

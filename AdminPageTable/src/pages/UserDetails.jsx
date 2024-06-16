@@ -1,10 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Card } from 'antd';
-import { selectUser, selectUserDocuments, selectUserId } from '../../redux/slices/usersDetails/usersDetailsSlice';
-import { useSelector } from 'react-redux';
-import { useGetUserByIdMutation } from '../api/apiSlice';
-import PersonalInfo from './PersonalInfo';
-import OtherInfo from './OtherInfo';
+import { PersonalInformation } from './PersonalInformation/PersonalInformation';
+import { Documents } from './Documents/Documents';
 
 const tabList = [
   {
@@ -17,28 +14,10 @@ const tabList = [
   },
 ];
 
-const A = () => {
-  const [userDetails] = useGetUserByIdMutation()
-  const userId = useSelector(selectUserId);
-  const user = useSelector(selectUser);
-  const documents = useSelector(selectUserDocuments);
-
-  useEffect(()=>{
-    userDetails({ userId })
-  },[userId,userDetails])
-  console.log(documents)
-
-  return(
-      <div style={{display: 'flex' , gap:20}}>
-        <PersonalInfo user={user} documents={documents}/>
-        <OtherInfo user={user} documents={documents}/>
-      </div>
-    )
-}
 
 const contentList = {
-  tab1: <div><A/></div>
-//   tab2: <p>2</p>,
+  tab1: <div><PersonalInformation/></div>,
+  tab2: <div><Documents/></div>,
 };
 
 
@@ -48,6 +27,7 @@ const UserDetails = () => {
   const onTab1Change = (key) => {
     setActiveTabKey1(key);
   };
+
   return (
     <>
       <Card

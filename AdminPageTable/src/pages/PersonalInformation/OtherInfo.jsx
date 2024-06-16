@@ -1,7 +1,13 @@
 import { Card, Table } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { selectUser, selectUserDocuments } from '../../../redux/slices/usersDetails/usersDetailsSlice';
+import { useSelector } from 'react-redux';
 
-const OtherInfo = ( user, documents ) => {
+const OtherInfo = () => {
+
+  const user = useSelector(selectUser);
+  const documents = useSelector(selectUserDocuments);
+
   const otherInfoColumns = [
     {
       title: 'Դաշտ',
