@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Card } from 'antd';
+import { Breadcrumb, Card } from 'antd';
 import { PersonalInformation } from './PersonalInformation/PersonalInformation';
 import { Documents } from './Documents/Documents';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../redux/slices/usersDetails/usersDetailsSlice';
 
 const tabList = [
   {
@@ -23,12 +25,21 @@ const contentList = {
 
 const UserDetails = () => {
   const [activeTabKey1, setActiveTabKey1] = useState('tab1');
+  const user = useSelector(selectUser);
   const onTab1Change = (key) => {
     setActiveTabKey1(key);
   };
 
   return (
     <>
+     <Breadcrumb
+        style={{
+        margin: '16px 0',
+        }}
+      >
+        <Breadcrumb.Item>Օգտատերեր</Breadcrumb.Item>
+        <Breadcrumb.Item >{user.fullName}</Breadcrumb.Item>
+      </Breadcrumb>
       <Card
         style={{
           width: '100%',

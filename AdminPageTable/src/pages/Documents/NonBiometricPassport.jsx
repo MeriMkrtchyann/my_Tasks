@@ -44,17 +44,20 @@ const NonBiometricPassport = ( ) => {
   ];
 
   return (
-    <Card
-      title={<><IdcardOutlined /> Նույնականացման քարտ</>}
-      bordered={false}
-      style={{ width: 600 }}
-    >
-      <Table
-        columns={userInfoColumns}
-        dataSource={userInfoData}
-        pagination={false}
-      />
-    </Card>
+    documents?.documents?.[0] ?
+      <Card
+        title={<><IdcardOutlined /> Նույնականացման քարտ</>}
+        bordered={false}
+        style={{ width: 600 }}
+      >
+        <Table
+          columns={userInfoColumns}
+          dataSource={userInfoData}
+          pagination={false}
+        />
+      </Card>
+      :
+      null
   );
 };
 

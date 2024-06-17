@@ -6,6 +6,7 @@ import { selectUserDocuments } from '../../../redux/slices/usersDetails/usersDet
 const IdCard = ( ) => {
   
   const documents = useSelector(selectUserDocuments);
+  console.log(documents)
 
   const userInfoColumns = [
     {
@@ -44,17 +45,19 @@ const IdCard = ( ) => {
   ];
 
   return (
-    <Card
-      title={<><IdcardOutlined /> Նույնականացման քարտ</>}
-      bordered={false}
-      style={{ width: 600 }}
-    >
-      <Table
-        columns={userInfoColumns}
-        dataSource={userInfoData}
-        pagination={false}
-      />
-    </Card>
+    documents?.documents?.[1] ? (
+      <Card
+        title={<><IdcardOutlined /> Նույնականացման քարտ</>}
+        bordered={false}
+        style={{ width: 600 }}
+      >
+        <Table
+          columns={userInfoColumns}
+          dataSource={userInfoData}
+          pagination={false}
+        />
+      </Card>
+    ) : null
   );
 };
 
