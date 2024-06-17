@@ -9,20 +9,16 @@ import {
   selectSortField,
   selectDefaultSort,
   selectSortOrder, 
-  updatePagination,
+  updatePagination
 } from '../../redux/slices/audits/auditsSlice';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
 import { Table } from 'antd';
 import { useGetAuditsMutation } from '../api/apiSlice.js';
 import { InputSearch } from '../components/inputSearch/InputSearch.jsx';
-// import { handleTableChange } from '../utils/tableHelpers.js';
-// import { updatePagination } from '../../redux/slices/usersInfo/usersInfoSlice.js';
 import { updateSortOrderInColumns } from '../utils/utils.js';
 
 const AuditsPage = () => {
   const dispatch = useDispatch();
-  const accessToken = useSelector(selectAccessToken);
   const audits = useSelector(selectAudits);
   const total = useSelector(selectAuditsTotal);
   const size = useSelector(selectSize);
@@ -75,7 +71,6 @@ const AuditsPage = () => {
   ]);
 
   useEffect(() => {
-    if (accessToken) {
       getAudits({
         page: page - 1,
         size,
@@ -83,8 +78,8 @@ const AuditsPage = () => {
         sortField,
         searchValue,
       });
-    }
-  }, [accessToken, page, size, sortOrder, sortField, searchValue, getAudits]);
+  }, [page, size, sortOrder, sortField, searchValue, getAudits]);
+
 
   const onChange = (pagination, _filters, sorter) => {
     const newSortOrder = sorter.order === 'ascend' ? 'asc' : 'desc';

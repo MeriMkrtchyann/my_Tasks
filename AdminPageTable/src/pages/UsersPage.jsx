@@ -13,7 +13,6 @@ import {
   selectSortOrder, 
   updatePagination,
   } from '../../redux/slices/usersInfo/usersInfoSlice';
-import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
 import { updateSortOrderInColumns } from '../utils/utils';
 import { useGetUsersMutation } from '../api/apiSlice';
 import { updateId } from '../../redux/slices/usersDetails/usersDetailsSlice';
@@ -24,7 +23,6 @@ const UsersPage = () => {
 
   const dispatch = useDispatch();
   const [getUsers] = useGetUsersMutation()
-  const accessToken = useSelector(selectAccessToken)
   const users = useSelector(selectUsers);
   const total = useSelector(selectUsersTotal)
   const size = useSelector(selectSize);
@@ -34,12 +32,10 @@ const UsersPage = () => {
   const sortField = useSelector(selectSortField);
   const defaultSort = useSelector(selectDefaultSort);
 
-
   const [ searchValue , setSearchValue ] = useState("")
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (accessToken) {
       getUsers({
         page: page - 1,
         size,
@@ -47,8 +43,7 @@ const UsersPage = () => {
         sortField,
         searchValue,
       })
-    }
-  }, [accessToken, page, size, sortOrder, sortField, searchValue, getUsers]);
+  }, [page, size, sortOrder, sortField, searchValue, getUsers]);
 
   const [columns, setColumns] = useState([
       {
