@@ -1,15 +1,17 @@
 import { Table } from "antd";
 import { handleTableChange } from "../../utils/tableHelpers";
+import { useDispatch } from "react-redux";
 
 function InformationTable (prop) {
 
-    const {columns, users, setColumns, pagination, total} = prop;
+    const  dispatch = useDispatch()
+    const { columns, users, setColumns, pagination, total} = prop
 
     return(
         <Table
             columns={columns} 
             dataSource={users} 
-            onChange={handleTableChange(setColumns)}
+            onChange={handleTableChange(dispatch,setColumns)}
             rowKey="id"
             pagination={{
                 current: pagination.page,
