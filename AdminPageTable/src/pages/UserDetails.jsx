@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Breadcrumb, Card } from 'antd';
 import { PersonalInformation } from './PersonalInformation/PersonalInformation';
 import { Documents } from './Documents/Documents';
-import { useSelector } from 'react-redux';
-import { selectUser } from '../../redux/slices/usersDetails/usersDetailsSlice';
+import { useGetUserByIdMutation } from '../api/apiSlice';
+import { useParams } from 'react-router-dom';
 
 const tabList = [
   {
@@ -17,18 +17,25 @@ const tabList = [
 ];
 
 
-const contentList = {
-  tab1: <div><PersonalInformation/></div>,
-  tab2: <div><Documents/></div>,
-};
-
-
 const UserDetails = () => {
   const [activeTabKey1, setActiveTabKey1] = useState('tab1');
-  const user = useSelector(selectUser);
+  const [userDetails, { data }] = useGetUserByIdMutation()
+  
+  const { userId } = useParams();
+
   const onTab1Change = (key) => {
     setActiveTabKey1(key);
   };
+
+  useEffect(() => {
+    userDetails({ userId });
+  }, [userId, userDetails]);
+
+  const contentList = {
+    tab1: <div><PersonalInformation data={data}/></div>,
+    tab2: <div><Documents data={data}/></div>,
+  };
+
 
   return (
     <>
@@ -38,7 +45,7 @@ const UserDetails = () => {
         }}
       >
         <Breadcrumb.Item>Օգտատերեր</Breadcrumb.Item>
-        <Breadcrumb.Item >{user.fullName}</Breadcrumb.Item>
+        <Breadcrumb.Item >{data?.user?.fullName}</Breadcrumb.Item>
       </Breadcrumb>
       <Card
         style={{

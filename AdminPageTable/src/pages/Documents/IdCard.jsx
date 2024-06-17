@@ -1,12 +1,27 @@
 import { Card, Table } from 'antd';
 import { IdcardOutlined } from '@ant-design/icons';
-import { useSelector } from 'react-redux';
-import { selectUserDocuments } from '../../../redux/slices/usersDetails/usersDetailsSlice';
+import { useEffect, useState } from 'react';
+// import { useSelector } from 'react-redux';
+// import { selectUserDocuments } from '../../../redux/slices/usersDetails/usersDetailsSlice';
 
-const IdCard = ( ) => {
+const IdCard = (parm ) => {
+
+  const [ documents , setDocuments] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setDocuments(parm.data.documents);
+      } catch (error) {
+        console.error('Ошибка:', error);
+      }
+    };
+
+    fetchData();
+  }, [parm.data]);
   
-  const documents = useSelector(selectUserDocuments);
-  console.log(documents)
+  // const documents = useSelector(selectUserDocuments);
+  // console.log(documents)
 
   const userInfoColumns = [
     {

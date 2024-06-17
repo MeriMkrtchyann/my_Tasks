@@ -1,12 +1,25 @@
 import { Card, Table } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { useSelector } from 'react-redux';
-import { selectUser, selectUserDocuments } from '../../../redux/slices/usersDetails/usersDetailsSlice';
+import { useEffect, useState } from 'react';
 
-const PersonalInfo = ( ) => {
+const PersonalInfo = ( parm ) => {
 
-  const user = useSelector(selectUser);
-  const documents = useSelector(selectUserDocuments);
+  const [ user , setUser] = useState([])
+  const [ documents , setDocuments] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setUser(parm?.data?.user);
+        setDocuments(parm?.data?.documents);
+      } catch (error) {
+        console.error('Ошибка:', error);
+      }
+    };
+
+    fetchData();
+  }, [parm]);
+
 
   const userInfoColumns = [
     {

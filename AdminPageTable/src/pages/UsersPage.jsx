@@ -15,7 +15,6 @@ import {
   } from '../../redux/slices/usersInfo/usersInfoSlice';
 import { updateSortOrderInColumns } from '../utils/utils';
 import { useGetUsersMutation } from '../api/apiSlice';
-import { updateId } from '../../redux/slices/usersDetails/usersDetailsSlice';
 import { useNavigate } from 'react-router-dom';
 import { InputSearch } from '../components/inputSearch/InputSearch';
 
@@ -52,8 +51,6 @@ const UsersPage = () => {
         align: 'center',
         render: (text, record) => (
           <a onClick={() => {
-            localStorage.setItem("userId", record.id)
-            dispatch(updateId(record.id))
             navigate(`/admin/users/${record.id}`)
           }}>
             {text}
