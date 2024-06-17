@@ -1,14 +1,12 @@
 import { Card, Table } from 'antd';
 import { IdcardOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
-import { selectUser, selectUserDocuments } from '../../../redux/slices/usersDetails/usersDetailsSlice';
+import { selectUserDocuments } from '../../../redux/slices/usersDetails/usersDetailsSlice';
 
 const NonBiometricPassport = ( ) => {
 
-  const user = useSelector(selectUser);
   const documents = useSelector(selectUserDocuments);
-console.log(documents)
-console.log(user)
+
   const userInfoColumns = [
     {
       title: 'Դաշտ',

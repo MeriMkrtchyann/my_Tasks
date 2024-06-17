@@ -23,7 +23,6 @@ const contentList = {
 
 const UserDetails = () => {
   const [activeTabKey1, setActiveTabKey1] = useState('tab1');
- 
   const onTab1Change = (key) => {
     setActiveTabKey1(key);
   };

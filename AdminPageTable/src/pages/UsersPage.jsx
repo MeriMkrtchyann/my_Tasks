@@ -56,7 +56,7 @@ const UsersPage = () => {
         align: 'center',
         render: (text, record) => (
           <a onClick={() => {
-            console.log(record)
+            localStorage.setItem("userId", record.id)
             dispatch(updateId(record.id))
             navigate(`/admin/users/${record.id}`)
           }}>
