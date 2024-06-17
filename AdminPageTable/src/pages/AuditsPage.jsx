@@ -9,13 +9,13 @@ import {
   selectSortField,
   selectDefaultSort,
   selectSortOrder, 
-  updatePagination 
 } from '../../redux/slices/audits/auditsSlice';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
-import { Input, Table } from 'antd';
-import { updateSortOrderInColumns } from '../utils/utils';
+import { Table } from 'antd';
 import {useGetAuditsMutation } from '../api/apiSlice.js'
+import { InputSearch } from '../components/inputSearch/InputSearch.jsx';
+import { handleTableChange } from '../utils/tableHelpers.js';
 
 const AuditsPage = () => {
 
@@ -31,6 +31,7 @@ const AuditsPage = () => {
   const defaultSort = useSelector(selectDefaultSort);
   const [ searchValue , setSearchValue ] = useState("")
   const [getAudits] = useGetAuditsMutation()
+  
 
   const [columns, setColumns] = useState([
     {
@@ -84,46 +85,13 @@ const AuditsPage = () => {
     }
   }, [accessToken, page, size, sortOrder, sortField, searchValue, getAudits]);
 
-  const onChange = (pagination, _filters, sorter) => {
-
-    const newSortOrder = sorter.order === 'ascend' ? 'asc' : 'desc';
-    const newSortField = sorter.field || "createdAt";
-
-    dispatch(updatePagination({
-      page: pagination.current ,
-      size: pagination.pageSize,
-      sortOrder: newSortOrder,
-      sortField: newSortField,
-      defaultSort: null, 
-    }));
-
-    setColumns(prevColumns => updateSortOrderInColumns(prevColumns, newSortField, sorter));
-  };
-
-  const onSearch = (value) => {
-    setSearchValue(value)
-};
-
-const onChangeValue = (event) => {
-  if (!event.target.value) {
-    setSearchValue("")
-  }
-}
-
   return (
     <>
-      <Input.Search
-        placeholder="input search text"
-        onSearch={onSearch}
-        onChange={onChangeValue}
-        style={{
-          width: 200,
-        }}
-      />
+      <InputSearch setSearchValue={setSearchValue}/>
       <Table
         columns={columns}
         dataSource={audits}
-        onChange={onChange}
+        onChange={handleTableChange(dispatch, setColumns)}
         rowKey="id"
         pagination={{
           current: pagination.page,
@@ -132,6 +100,9 @@ const onChangeValue = (event) => {
           showSizeChanger: pagination.showSizeChanger,
           pageSizeOptions: pagination.pageSizeOptions,
           showQuickJumper: pagination.showQuickJumper,
+        }}
+        scroll={{
+          x: 1000
         }}
       />
     </>

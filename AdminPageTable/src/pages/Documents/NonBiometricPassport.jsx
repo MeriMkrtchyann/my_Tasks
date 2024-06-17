@@ -46,7 +46,7 @@ const NonBiometricPassport = ( ) => {
   return (
     documents?.documents?.[0] ?
       <Card
-        title={<><IdcardOutlined /> Նույնականացման քարտ</>}
+        title={<><IdcardOutlined /> Ոչ կենսաչափական անձնագիր</>}
         bordered={false}
         style={{ width: 600 }}
       >
