@@ -12,7 +12,7 @@ import {
   updatePagination
 } from '../../redux/slices/audits/auditsSlice';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { Table } from 'antd';
+import { Breadcrumb, Table } from 'antd';
 import { InputSearch } from '../components/inputSearch/InputSearch.jsx';
 import { updateSortOrderInColumns } from '../utils/utils.js';
 import { useGetAuditsMutation } from '../api/audits/audits.js';
@@ -101,6 +101,9 @@ const AuditsPage = () => {
     <>
     {isLoading ? <Loading/> : (
       <>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+            <Breadcrumb.Item>Գործողություններ</Breadcrumb.Item>
+          </Breadcrumb>
         <InputSearch setSearchValue={setSearchValue}/>
         <Table
           columns={columns}

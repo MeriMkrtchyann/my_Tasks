@@ -1,4 +1,4 @@
-import { Table } from 'antd';
+import { Breadcrumb, Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
@@ -115,7 +115,11 @@ const UsersPage = () => {
       {isLoading ? (
         <Loading/>
       ) : (
+        
         <div>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+            <Breadcrumb.Item>Օգտատերեր</Breadcrumb.Item>
+          </Breadcrumb>
           <InputSearch setSearchValue={setSearchValue} />
           <Table 
               columns={columns} 

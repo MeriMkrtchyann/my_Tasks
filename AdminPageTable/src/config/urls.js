@@ -4,7 +4,8 @@ const urls = {
     aboutUsers : "/api/admin/user/all",
     count : "/api/admin/user/count",
     audits : "/api/admin/audits",
-    details : 'api/admin/user/details'
+    details : 'api/admin/user/details',
+    editProfile : '/api/admin/edit/profile'
 }
 
 export  { urls } 

@@ -9,6 +9,7 @@ import { AuditsPage } from './pages/AuditsPage';
 import { GuestRoute } from './components/guestRoute/GuestRoute';
 import "antd/dist/reset.css";
 import { UserDetails } from './pages/UserDetails';
+import { AdminDetails } from './pages/AdminDetails';
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
         <Route path={`${routes.users}`} element={<UsersPage />} />
         <Route path={`${routes.details}`} element={<UserDetails />} />
         <Route path={`${routes.audits}`} element={<AuditsPage />} />
+        <Route path={`${routes.adminDetails}`} element={<AdminDetails />} />
       </Route>
       <Route path="/*" element={<NotExistPage />} />
     </Routes>
