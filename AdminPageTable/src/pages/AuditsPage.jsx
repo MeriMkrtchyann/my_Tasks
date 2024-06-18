@@ -9,18 +9,17 @@ import {
   selectSortField,
   selectDefaultSort,
   selectSortOrder, 
+  updatePagination
 } from '../../redux/slices/audits/auditsSlice';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
 import { Table } from 'antd';
-import {useGetAuditsMutation } from '../api/apiSlice.js'
 import { InputSearch } from '../components/inputSearch/InputSearch.jsx';
-import { handleTableChange } from '../utils/tableHelpers.js';
+import { updateSortOrderInColumns } from '../utils/utils.js';
+import { useGetAuditsMutation } from '../api/audits/audits.js';
+import { Loading } from '../components/loading/Loading.jsx';
 
 const AuditsPage = () => {
-
   const dispatch = useDispatch();
-  const accessToken = useSelector(selectAccessToken);
   const audits = useSelector(selectAudits);
   const total = useSelector(selectAuditsTotal);
   const size = useSelector(selectSize);
@@ -29,9 +28,8 @@ const AuditsPage = () => {
   const sortOrder = useSelector(selectSortOrder);
   const sortField = useSelector(selectSortField);
   const defaultSort = useSelector(selectDefaultSort);
-  const [ searchValue , setSearchValue ] = useState("")
-  const [getAudits] = useGetAuditsMutation()
-  
+  const [searchValue, setSearchValue] = useState("");
+  const [getAudits , {isLoading}] = useGetAuditsMutation();
 
   const [columns, setColumns] = useState([
     {
@@ -69,42 +67,60 @@ const AuditsPage = () => {
       dataIndex: 'createdAt',
       sorter: true,
       align: 'center',
-      sortOrder : defaultSort
+      sortOrder: defaultSort,
     },
   ]);
 
   useEffect(() => {
-    if (accessToken) {
       getAudits({
         page: page - 1,
         size,
         sortOrder,
         sortField,
         searchValue,
-      })
-    }
-  }, [accessToken, page, size, sortOrder, sortField, searchValue, getAudits]);
+      });
+  }, [page, size, sortOrder, sortField, searchValue, getAudits]);
+
+
+  const onChange = (pagination, _filters, sorter) => {
+    const newSortOrder = sorter.order === 'ascend' ? 'asc' : 'desc';
+    const newSortField = sorter.field || "createdAt";
+
+    dispatch(updatePagination({
+      page: pagination.current,
+      size: pagination.pageSize,
+      sortOrder: newSortOrder,
+      sortField: newSortField,
+      defaultSort: null, 
+    }));
+
+    setColumns(prevColumns => updateSortOrderInColumns(prevColumns, newSortField, sorter));
+  };
 
   return (
     <>
-      <InputSearch setSearchValue={setSearchValue}/>
-      <Table
-        columns={columns}
-        dataSource={audits}
-        onChange={handleTableChange(dispatch, setColumns)}
-        rowKey="id"
-        pagination={{
-          current: pagination.page,
-          pageSize: pagination.size,
-          total: total,
-          showSizeChanger: pagination.showSizeChanger,
-          pageSizeOptions: pagination.pageSizeOptions,
-          showQuickJumper: pagination.showQuickJumper,
-        }}
-        scroll={{
-          x: 1000
-        }}
-      />
+    {isLoading ? <Loading/> : (
+      <>
+        <InputSearch setSearchValue={setSearchValue}/>
+        <Table
+          columns={columns}
+          dataSource={audits}
+          onChange={onChange}
+          rowKey="id"
+          pagination={{
+            current: pagination.page,
+            pageSize: pagination.size,
+            total: total,
+            showSizeChanger: pagination.showSizeChanger,
+            pageSizeOptions: pagination.pageSizeOptions,
+            showQuickJumper: pagination.showQuickJumper,
+          }}
+          scroll={{
+            x: 1000
+          }}
+        />
+      </>
+    )}
     </>
   );
 };

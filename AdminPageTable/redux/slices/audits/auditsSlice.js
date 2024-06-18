@@ -75,15 +75,15 @@ export const auditsInfoSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addMatcher(apiSlice.endpoints.getAudits.matchPending, () => {
-        console.log('matchPending')
+        // console.log('matchPending')
       })
       .addMatcher(apiSlice.endpoints.getAudits.matchFulfilled, (state, action) => {
-        console.log('matchFulfilled')
+        // console.log('matchFulfilled')
         state.audits.audits = action.payload.audits;
         state.audits.total = action.payload.total;
       })
       .addMatcher(apiSlice.endpoints.getAudits.matchRejected, () => {
-        console.log('matchRejected')
+        // console.log('matchRejected')
       });
   },
 });

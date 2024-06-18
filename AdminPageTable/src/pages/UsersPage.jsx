@@ -13,18 +13,16 @@ import {
   selectSortOrder, 
   updatePagination,
   } from '../../redux/slices/usersInfo/usersInfoSlice';
-import { selectAccessToken } from '../../redux/slices/activeAdmin/activeAdminSlice';
 import { updateSortOrderInColumns } from '../utils/utils';
-import { useGetUsersMutation } from '../api/apiSlice';
-import { updateId } from '../../redux/slices/usersDetails/usersDetailsSlice';
 import { useNavigate } from 'react-router-dom';
 import { InputSearch } from '../components/inputSearch/InputSearch';
+import { useGetUsersMutation } from '../api/users/users';
+import { Loading } from '../components/loading/Loading';
 
 const UsersPage = () => {
 
   const dispatch = useDispatch();
-  const [getUsers] = useGetUsersMutation()
-  const accessToken = useSelector(selectAccessToken)
+  const [getUsers, { isLoading, isError }] = useGetUsersMutation()
   const users = useSelector(selectUsers);
   const total = useSelector(selectUsersTotal)
   const size = useSelector(selectSize);
@@ -34,12 +32,10 @@ const UsersPage = () => {
   const sortField = useSelector(selectSortField);
   const defaultSort = useSelector(selectDefaultSort);
 
-
   const [ searchValue , setSearchValue ] = useState("")
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (accessToken) {
       getUsers({
         page: page - 1,
         size,
@@ -47,8 +43,7 @@ const UsersPage = () => {
         sortField,
         searchValue,
       })
-    }
-  }, [accessToken, page, size, sortOrder, sortField, searchValue, getUsers]);
+  }, [page, size, sortOrder, sortField, searchValue, getUsers]);
 
   const [columns, setColumns] = useState([
       {
@@ -57,8 +52,6 @@ const UsersPage = () => {
         align: 'center',
         render: (text, record) => (
           <a onClick={() => {
-            localStorage.setItem("userId", record.id)
-            dispatch(updateId(record.id))
             navigate(`/admin/users/${record.id}`)
           }}>
             {text}
@@ -116,30 +109,35 @@ const UsersPage = () => {
       }));
       setColumns(prevColumns => updateSortOrderInColumns(prevColumns, newSortField, sorter));
     };
-
-   
     return (
-      <>
-        <InputSearch setSearchValue={setSearchValue}/>
-        <Table 
-            columns={columns} 
-            dataSource={users} 
-            onChange={onChange} 
-            rowKey="id"
-            pagination={{
-              current: pagination.page,
-              pageSize: pagination.size,
-              total: total,
-              showSizeChanger: pagination.showSizeChanger,
-              pageSizeOptions: pagination.pageSizeOptions,
-              showQuickJumper: pagination.showQuickJumper,
-            }}
-            scroll={{
-              x: 1000
-            }}
-        />;
-      </>
-    )
+    <>
+      {isError && <p style={{ color: 'red' }}>Error fetching users</p>}
+      {isLoading ? (
+        <Loading/>
+      ) : (
+        <div>
+          <InputSearch setSearchValue={setSearchValue} />
+          <Table 
+              columns={columns} 
+              dataSource={users} 
+              onChange={onChange} 
+              rowKey="id"
+              pagination={{
+                current: pagination.page,
+                pageSize: pagination.size,
+                total: total,
+                showSizeChanger: pagination.showSizeChanger,
+                pageSizeOptions: pagination.pageSizeOptions,
+                showQuickJumper: pagination.showQuickJumper,
+              }}
+              scroll={{
+                x: 1000
+              }}
+            />;
+        </div>
+      )}
+    </>
+  );
 }
 
 export { UsersPage } 
