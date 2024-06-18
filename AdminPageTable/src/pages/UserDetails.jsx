@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react';
 import { Breadcrumb, Button, Card } from 'antd';
 import { PersonalInformation } from './PersonalInformation/PersonalInformation';
 import { Documents } from './Documents/Documents';
-import { useGetUserByIdMutation } from '../api/apiSlice';
 import { useNavigate, useParams } from 'react-router-dom';
-// import { urls } from '../config/urls';
-// import { useHistory } from 'react-router-dom';?
-// import { routes } from '../config/routes';
+import { useGetUserByIdMutation } from '../api/users/users';
+import { Loading } from '../components/loading/Loading';
 
 const tabList = [
   {
@@ -21,7 +19,7 @@ const tabList = [
 
 const UserDetails = () => {
   const [activeTabKey1, setActiveTabKey1] = useState('tab1');
-  const [userDetails, { data }] = useGetUserByIdMutation()
+  const [userDetails, { data , isLoading }] = useGetUserByIdMutation()
   const { userId } = useParams();
 
   const onTab1Change = (key) => {
@@ -41,31 +39,26 @@ const UserDetails = () => {
 
   return (
     <>
-     <Breadcrumb
-        style={{
-        margin: '16px 0',
-        
-        }}
-      >
-        <Breadcrumb.Item 
-          style={{margin: 0 , padding: 0}}
-          onClick={() => navigate(-1)}>
-          <Button type="text">
-            Օգտատերեր
-          </Button>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item >{data?.user?.fullName}</Breadcrumb.Item>
-      </Breadcrumb>
-      <Card
-        style={{
-          width: '100%',
-        }}
-        tabList={tabList}
-        activeTabKey={activeTabKey1}
-        onTabChange={onTab1Change}
-      >
-        {contentList[activeTabKey1]}
-      </Card>
+      {isLoading ? <Loading /> : (
+        <>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+            <Breadcrumb.Item onClick={() => navigate(-1)}>
+              <Button type="text">Օգտատերեր</Button>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>{data?.user?.fullName}</Breadcrumb.Item>
+          </Breadcrumb>
+          <Card
+            style={{
+              width: '100%',
+            }}
+            tabList={tabList}
+            activeTabKey={activeTabKey1}
+            onTabChange={onTab1Change}
+          >
+            {contentList[activeTabKey1]}
+          </Card>
+        </>
+      )}
     </>
   );
 };

@@ -8,8 +8,7 @@ import { getToken } from '../../api/getToken';
 import { urls } from '../../config/urls';
 import { getData } from '../../api/getData';
 import { routes } from '../../config/routes';
-// import { updateUsers } from '../../../redux/slices/usersInfo/usersInfoSlice';
-import { useGetUsersMutation } from '../../api/apiSlice';
+import { useGetUsersMutation } from '../../api/users/users';
 
 const Container = styled.div`
     display: flex;

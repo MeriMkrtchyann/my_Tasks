@@ -14,14 +14,15 @@ import {
   updatePagination,
   } from '../../redux/slices/usersInfo/usersInfoSlice';
 import { updateSortOrderInColumns } from '../utils/utils';
-import { useGetUsersMutation } from '../api/apiSlice';
 import { useNavigate } from 'react-router-dom';
 import { InputSearch } from '../components/inputSearch/InputSearch';
+import { useGetUsersMutation } from '../api/users/users';
+import { Loading } from '../components/loading/Loading';
 
 const UsersPage = () => {
 
   const dispatch = useDispatch();
-  const [getUsers] = useGetUsersMutation()
+  const [getUsers, { isLoading, isError }] = useGetUsersMutation()
   const users = useSelector(selectUsers);
   const total = useSelector(selectUsersTotal)
   const size = useSelector(selectSize);
@@ -108,30 +109,35 @@ const UsersPage = () => {
       }));
       setColumns(prevColumns => updateSortOrderInColumns(prevColumns, newSortField, sorter));
     };
-
-   
     return (
-      <>
-        <InputSearch setSearchValue={setSearchValue}/>
-        <Table 
-            columns={columns} 
-            dataSource={users} 
-            onChange={onChange} 
-            rowKey="id"
-            pagination={{
-              current: pagination.page,
-              pageSize: pagination.size,
-              total: total,
-              showSizeChanger: pagination.showSizeChanger,
-              pageSizeOptions: pagination.pageSizeOptions,
-              showQuickJumper: pagination.showQuickJumper,
-            }}
-            scroll={{
-              x: 1000
-            }}
-        />;
-      </>
-    )
+    <>
+      {isError && <p style={{ color: 'red' }}>Error fetching users</p>}
+      {isLoading ? (
+        <Loading/>
+      ) : (
+        <div>
+          <InputSearch setSearchValue={setSearchValue} />
+          <Table 
+              columns={columns} 
+              dataSource={users} 
+              onChange={onChange} 
+              rowKey="id"
+              pagination={{
+                current: pagination.page,
+                pageSize: pagination.size,
+                total: total,
+                showSizeChanger: pagination.showSizeChanger,
+                pageSizeOptions: pagination.pageSizeOptions,
+                showQuickJumper: pagination.showQuickJumper,
+              }}
+              scroll={{
+                x: 1000
+              }}
+            />;
+        </div>
+      )}
+    </>
+  );
 }
 
 export { UsersPage } 

@@ -11,7 +11,7 @@ const NonBiometricPassport = ( parm ) => {
       try {
         setDocuments(parm.data.documents);
       } catch (error) {
-        console.error('Ошибка:', error);
+        console.error('error:', error);
       }
     };
 

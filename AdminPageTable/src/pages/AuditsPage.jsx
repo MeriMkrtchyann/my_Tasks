@@ -13,9 +13,10 @@ import {
 } from '../../redux/slices/audits/auditsSlice';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Table } from 'antd';
-import { useGetAuditsMutation } from '../api/apiSlice.js';
 import { InputSearch } from '../components/inputSearch/InputSearch.jsx';
 import { updateSortOrderInColumns } from '../utils/utils.js';
+import { useGetAuditsMutation } from '../api/audits/audits.js';
+import { Loading } from '../components/loading/Loading.jsx';
 
 const AuditsPage = () => {
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ const AuditsPage = () => {
   const sortField = useSelector(selectSortField);
   const defaultSort = useSelector(selectDefaultSort);
   const [searchValue, setSearchValue] = useState("");
-  const [getAudits] = useGetAuditsMutation();
+  const [getAudits , {isLoading}] = useGetAuditsMutation();
 
   const [columns, setColumns] = useState([
     {
@@ -98,24 +99,28 @@ const AuditsPage = () => {
 
   return (
     <>
-      <InputSearch setSearchValue={setSearchValue}/>
-      <Table
-        columns={columns}
-        dataSource={audits}
-        onChange={onChange}
-        rowKey="id"
-        pagination={{
-          current: pagination.page,
-          pageSize: pagination.size,
-          total: total,
-          showSizeChanger: pagination.showSizeChanger,
-          pageSizeOptions: pagination.pageSizeOptions,
-          showQuickJumper: pagination.showQuickJumper,
-        }}
-        scroll={{
-          x: 1000
-        }}
-      />
+    {isLoading ? <Loading/> : (
+      <>
+        <InputSearch setSearchValue={setSearchValue}/>
+        <Table
+          columns={columns}
+          dataSource={audits}
+          onChange={onChange}
+          rowKey="id"
+          pagination={{
+            current: pagination.page,
+            pageSize: pagination.size,
+            total: total,
+            showSizeChanger: pagination.showSizeChanger,
+            pageSizeOptions: pagination.pageSizeOptions,
+            showQuickJumper: pagination.showQuickJumper,
+          }}
+          scroll={{
+            x: 1000
+          }}
+        />
+      </>
+    )}
     </>
   );
 };

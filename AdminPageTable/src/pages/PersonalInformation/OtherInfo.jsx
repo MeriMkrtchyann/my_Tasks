@@ -13,7 +13,7 @@ const OtherInfo = (parm) => {
         setUser(parm?.data?.user);
         setDocuments(parm?.data?.documents);
       } catch (error) {
-        console.error('Ошибка:', error);
+        console.error('error:', error);
       }
     };
 

@@ -1,8 +1,6 @@
 import { Card, Table } from 'antd';
 import { IdcardOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-// import { useSelector } from 'react-redux';
-// import { selectUserDocuments } from '../../../redux/slices/usersDetails/usersDetailsSlice';
 
 const IdCard = (parm ) => {
 
@@ -13,15 +11,12 @@ const IdCard = (parm ) => {
       try {
         setDocuments(parm.data.documents);
       } catch (error) {
-        console.error('Ошибка:', error);
+        console.error('error:', error);
       }
     };
 
     fetchData();
   }, [parm.data]);
-  
-  // const documents = useSelector(selectUserDocuments);
-  // console.log(documents)
 
   const userInfoColumns = [
     {
