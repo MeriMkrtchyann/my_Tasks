@@ -4,6 +4,8 @@ import { InputAdminInfo } from "../components/adminDetails/InputAdminInfo";
 
 const AdminDetails = () => {
 
+    
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column' , gap: 25 }}>
             <Breadcrumb style={{ margin: '16px 0' }}>

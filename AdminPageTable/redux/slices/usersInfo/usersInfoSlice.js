@@ -11,6 +11,7 @@ const initialState = {
       sortOrder: 'desc',
       sortField: 'createdAt',
       defaultSort: 'ascend',
+      searchValue : "",
       showSizeChanger: true,
       pageSizeOptions: ['10', '20', '30'],
       showQuickJumper: true,
@@ -72,6 +73,10 @@ export const usersSlice = createSlice({
       state.users.pagination.sortOrder = action.payload.sortOrder;
       state.users.pagination.defaultSort = action.payload.defaultSort ?? null;
     },
+    updateUsers : (state, action) => {
+      state.users.users = action.payload.users;
+      state.users.total = action.payload.total;
+    }
   },
   extraReducers: (builder) => {
     builder

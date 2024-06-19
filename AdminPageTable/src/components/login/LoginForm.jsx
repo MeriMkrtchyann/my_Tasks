@@ -1,14 +1,12 @@
 import { useDispatch } from 'react-redux';
-import { updateAdminInfo } from '../../../redux/slices/activeAdmin/activeAdminSlice';
+import { updateAccessToken } from '../../../redux/slices/activeAdmin/activeAdminSlice';
 import { useNavigate } from 'react-router-dom';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Button, Form, Input, Checkbox, message } from 'antd';
 import styled from '@emotion/styled';
 import { getToken } from '../../api/getToken';
 import { urls } from '../../config/urls';
-import { getData } from '../../api/getData';
 import { routes } from '../../config/routes';
-import { useGetUsersMutation } from '../../api/users/users';
 
 const Container = styled.div`
     display: flex;
@@ -21,7 +19,6 @@ function LoginForm() {
     const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm();
     const username = useWatch({ control, name: 'username', defaultValue: '' });
     const password = useWatch({ control, name: 'password', defaultValue: '' });
-    const [getUsers] = useGetUsersMutation()
     const dispatch = useDispatch();
     const navigate = useNavigate();
     
@@ -29,10 +26,7 @@ function LoginForm() {
         try {
             const accessToken = await getToken(urls.login , values);
             if (accessToken) {
-                const adminData = await getData(urls.aboutAdmin)
-                dispatch(updateAdminInfo(adminData));
-                getUsers({})
-                navigate(routes.admin);
+                dispatch(updateAccessToken(accessToken))
                 navigate(routes.admin);
             }
         } catch (error) {
